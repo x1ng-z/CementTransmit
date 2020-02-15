@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="hs.dao.Packer">
+    <resultMap id="packerconfigure" type="map">
+        <id property="id" column="id"/>
+        <result property="handCode" column="handCode"/>
+        <result property="productLine" column="productLine"/>
+        <result property="deviceIp" column="deviceIp"/>
+        <result property="isHeartbeat" column="isHeartbeat"/>
+        <result property="offLineSecond" column="offLineSecond"/>
+        <result property="commentZh" column="commentZh"/>
+        <result property="companyName" column="companyName"/>
+        <collection  property="carLanes" ofType="hs.modle.CarLane">
+            <id property="id" column="lane_id"/>
+            <result property="hardCode" column="hardCode"/>
+            <result property="commentZh" column="commentZh"/>
+        </collection >
+    </resultMap>
+
+    <select id="getPackerConfigure" resultMap="packerconfigure">
+        select
+        device.id,
+        device.commentZh,
+        device.handCode,
+        device.productLine,
+        device.deviceIp,
+        device.isHeartBeat,
+        device.offLineSecond,
+        device.companyName,
+          lane.id as lane_id,
+          lane.hardCode,
+          lane. commentZh from device left join  lane on device.id = lane.device_id;
+    </select>
+
+</mapper>
