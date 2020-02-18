@@ -3,9 +3,9 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="hs.dao.Packer">
-    <resultMap id="packerconfigure" type="map">
+    <resultMap id="packerconfigure" type="hs.modle.PackerConfigure">
         <id property="id" column="id"/>
-        <result property="handCode" column="handCode"/>
+        <result property="deviceOrder" column="deviceOrder"/>
         <result property="productLine" column="productLine"/>
         <result property="deviceIp" column="deviceIp"/>
         <result property="isHeartbeat" column="isHeartbeat"/>
@@ -15,7 +15,8 @@
         <collection  property="carLanes" ofType="hs.modle.CarLane">
             <id property="id" column="lane_id"/>
             <result property="hardCode" column="hardCode"/>
-            <result property="commentZh" column="commentZh"/>
+            <result property="commentZh" column="carlaneCommentZh"/>
+            <result property="laneIndex" column="laneoOrder"/>
         </collection >
     </resultMap>
 
@@ -23,7 +24,7 @@
         select
         device.id,
         device.commentZh,
-        device.handCode,
+        device.deviceOrder,
         device.productLine,
         device.deviceIp,
         device.isHeartBeat,
@@ -31,7 +32,8 @@
         device.companyName,
           lane.id as lane_id,
           lane.hardCode,
-          lane. commentZh from device left join  lane on device.id = lane.device_id;
+          lane. commentZh as carlaneCommentZh,
+          lane.laneoOrder from device left join  lane on device.id = lane.device_id;
     </select>
 
 </mapper>

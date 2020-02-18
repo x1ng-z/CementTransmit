@@ -1,4 +1,4 @@
-package hs.service;
+package hs.service.connect;
 
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;

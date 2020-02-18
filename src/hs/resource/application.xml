@@ -55,7 +55,7 @@
     </bean>
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
-    <bean id="server_netty" class="hs.service.DeviceConnect" destroy-method="destory">
+    <bean id="server_netty" class="hs.service.connect.DeviceConnect" destroy-method="destory">
         <constructor-arg type="int" value="${port}"/>
     </bean>
 

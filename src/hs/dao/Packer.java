@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Param;
  * @date 2020/2/13 12:22
  */
 public interface Packer {
-    @MapKey("id")
+    @MapKey("deviceOrder")
     java.util.Map<Integer,PackerConfigure> getPackerConfigure();
     void addPackConfigure(@Param("packerConfigure") PackerConfigure packerConfigure);
     void updatePackConfigure(@Param("packerConfigure") PackerConfigure packerConfigure);

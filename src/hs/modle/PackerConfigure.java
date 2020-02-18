@@ -1,6 +1,5 @@
 package hs.modle;
 
-
 import java.util.List;
 
 /**
@@ -10,7 +9,7 @@ import java.util.List;
  */
 public class PackerConfigure {
     int id;
-    int handCode;
+    int deviceOrder;
     int productLine;
     String deviceIp;
     boolean isHeartbeat;
@@ -36,12 +35,12 @@ public class PackerConfigure {
 
 
 
-    public int getHandCode() {
-        return handCode;
+    public int getDeviceOrder() {
+        return deviceOrder;
     }
 
-    public void setHandCode(int handCode) {
-        this.handCode = handCode;
+    public void setDeviceOrder(int deviceOrder) {
+        this.deviceOrder = deviceOrder;
     }
 
     public int getProductLine() {

@@ -1,4 +1,4 @@
-package hs.service;
+package hs.service.connect;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.*;

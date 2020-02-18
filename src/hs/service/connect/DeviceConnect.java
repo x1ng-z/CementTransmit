@@ -1,4 +1,4 @@
-package hs.service;
+package hs.service.connect;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
