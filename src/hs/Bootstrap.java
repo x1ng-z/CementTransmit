@@ -27,6 +27,7 @@ public class Bootstrap {
 
         PackMAchineGroup packMAchineGroup=cxt.getBean(PackMAchineGroup.class);
         //test threadlocal
-        System.out.println("end");
+        System.out.println("end-ljr");
+
     }
 }
