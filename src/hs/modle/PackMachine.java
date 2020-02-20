@@ -8,6 +8,7 @@ package hs.modle;
 
 
 import hs.modle.order.Order;
+import hs.modle.order.PackManulOrder;
 import hs.service.Command;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 
 public class PackMachine implements Runnable {
     public static Logger logger = Logger.getLogger(PackMachine.class);
-
+    public  int defaultClass=1;
     private LanePipe lanePipe;
     private PackerConfigure packerConfigure;
     private DefaultLaneContext currentLaneContext = null;
@@ -37,8 +38,9 @@ public class PackMachine implements Runnable {
     @Autowired
     private MessageBus messageBus;
 
-    public PackMachine(PackerConfigure packerConfigure) {
+    public PackMachine(PackerConfigure packerConfigure,Executor executor) {
         this.packerConfigure = packerConfigure;
+        this.executor=executor;
         this.deviceOrder = packerConfigure.getDeviceOrder();
     }
 
@@ -51,7 +53,7 @@ public class PackMachine implements Runnable {
      * 获取所有订单,这里需要经过排序，大致为将有订单的车道按照第一条订单的创建时间
      * 进行排序，最后按照这个顺序，将所有车道内的订单按照按照车道顺序交叉插入到列表中
      */
-    java.util.List<Order> getAllSortOrder() {
+    public java.util.List<Order> getAllSortOrder() {
         List<Order> list = new ArrayList<Order>();
         CarLane[] carLaneSortByFirstOrder=new CarLane [packerConfigure.getCarLanes().size()];
         int j=0;
@@ -116,6 +118,7 @@ public class PackMachine implements Runnable {
     public boolean addOrder(int laneindex, Order order) {
         order.setAssign_time(Instant.now());
         order.setProductLineIndex(packerConfigure.getProductLine());
+        order.setPackMachineIndex(packerConfigure.getDeviceOrder());
         DefaultLaneContext checkctx = lanePipe.head.next;
         while (checkctx != lanePipe.tail) {
             if (checkctx.getLane().getLaneIndex() == (laneindex)) {
@@ -167,13 +170,15 @@ public class PackMachine implements Runnable {
     /**
      * 包装机构建类
      */
-    public static PackMachine build(PackerConfigure packerConfigure) {
-        PackMachine packMachine = new PackMachine(packerConfigure);
+    public static PackMachine build(PackerConfigure packerConfigure,Executor executor) {
+        PackMachine packMachine = new PackMachine(packerConfigure,executor);
         packMachine.lanePipe = new LanePipe();
         for (CarLane carLane : packerConfigure.getCarLanes()) {
             packMachine.lanePipe.addLast(carLane.getCommentZh(), carLane);
         }
+        executor.execute(packMachine);
         return packMachine;
+
     }
 
 
@@ -232,7 +237,6 @@ public class PackMachine implements Runnable {
 
     @Override
     public void run() {
-        Thread.currentThread().setDaemon(true);
         while (!Thread.currentThread().isInterrupted()) {
             try {
                 checkNeedExecuteOrderByRecycle();
@@ -250,4 +254,7 @@ public class PackMachine implements Runnable {
     }
 
 
+    public PackerConfigure getPackerConfigure() {
+        return packerConfigure;
+    }
 }

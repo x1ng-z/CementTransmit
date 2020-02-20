@@ -9,6 +9,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 
 import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * @author zzx
@@ -29,4 +32,6 @@ public class SpringAnnotionConfigure {
     public PackMAchineGroup buildPackMachineGroup(){
         return PackMAchineGroup.build(packer.getPackerConfigure());
     }
+
+
 }

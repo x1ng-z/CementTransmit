@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  * @version 1.0
  * @date 2020/2/17 23:12
  */
-@Component
+@Component("orderOperateService")
 public class OrderOperateService {
     @Autowired
     private UnassignOrderList unassignOrderList;
@@ -53,6 +53,7 @@ public class OrderOperateService {
 
 
     public void modifyOrderInPackList(Location location,int index,Order order){
+        //TODO 修改后的订单如果订单总数小于已装数量，则拒绝修改
         packMAchineGroup.modifySolver(location,index,order);
     }
 
@@ -61,8 +62,11 @@ public class OrderOperateService {
     }
 
 
+    public UnassignOrderList getUnassignOrderList() {
+        return unassignOrderList;
+    }
 
-
-
-
+    public PackMAchineGroup getPackMAchineGroup() {
+        return packMAchineGroup;
+    }
 }

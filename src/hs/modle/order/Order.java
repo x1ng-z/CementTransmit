@@ -93,4 +93,7 @@ public interface Order extends Comparable {
     public String getCarLaneHardCode() ;
 
     public void setCarLaneHardCode(String carLaneHardCode) ;
+
+
+
 }

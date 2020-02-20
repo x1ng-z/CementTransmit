@@ -3,7 +3,7 @@ package hs.modle;
 import hs.modle.order.Order;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.*;
 
 /**
  * @author zzx
@@ -16,18 +16,26 @@ public class PackMAchineGroup {
 
     public static PackMAchineGroup build(Map<Integer,PackerConfigure> packerConfigureMap){
         PackMAchineGroup packMAchineGroup=new PackMAchineGroup();
+        ExecutorService executor =Executors.newCachedThreadPool(new ThreadFactory(){
+            @Override
+            public Thread newThread(Runnable r) {
+                Thread thread=new Thread(r);
+                thread.setDaemon(true);
+                return thread;
+            }
+        });
         for(Map.Entry<Integer, PackerConfigure>packerConfigureEntry:packerConfigureMap.entrySet()){
             PackerConfigure packerConfigure=packerConfigureEntry.getValue();
             if(packMAchineGroup.productLineMaps.containsKey(packerConfigure.getProductLine())){
                 //已经包含了，直接添加包装机
                 ProductLine existProductLine=packMAchineGroup.productLineMaps.get(packerConfigure.getProductLine());
-                PackMachine newPackMachine=PackMachine.build(packerConfigure);
+                PackMachine newPackMachine=PackMachine.build(packerConfigure,executor);
                 existProductLine.putPackMachine(newPackMachine);
             }else {
                 //含没有新建相关产线，需要先新建产线后加入
                 ProductLine newProductLine=new ProductLine(packerConfigure.getProductLine());
                 packMAchineGroup.productLineMaps.put(packerConfigure.getProductLine(),newProductLine);
-                PackMachine newPackMachine=PackMachine.build(packerConfigure);
+                PackMachine newPackMachine=PackMachine.build(packerConfigure,executor);
                 newProductLine.putPackMachine(newPackMachine);
             }
 
@@ -55,9 +63,9 @@ public class PackMAchineGroup {
         return productLineMaps.get(location.getProductionLine()).deviceMaps.get(location.getPackmachineIndex()).deleteOrder(location.getCarLaneIndex(),index);
     }
 
-
-
-
+    public Map<Integer, ProductLine> getProductLineMaps() {
+        return productLineMaps;
+    }
 
 
     public static class ProductLine{
@@ -72,6 +80,10 @@ public class PackMAchineGroup {
         }
         public void putPackMachine(PackMachine p){
             deviceMaps.put(p.getDeviceOrder(),p);
+        }
+
+        public Map<Integer, PackMachine> getDeviceMaps() {
+            return deviceMaps;
         }
     }
 

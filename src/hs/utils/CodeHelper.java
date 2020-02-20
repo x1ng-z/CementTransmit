@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author zzx
@@ -110,5 +111,11 @@ public class CodeHelper {
 
         return wait4send;
 
+    }
+
+    public static String getUUID(){
+        String uuid = UUID.randomUUID().toString();
+        //去掉“-”符号
+        return uuid.replaceAll("-", "");
     }
 }

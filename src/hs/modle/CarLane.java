@@ -2,6 +2,7 @@ package hs.modle;
 
 
 import hs.modle.order.Order;
+import hs.modle.order.PackManulOrder;
 import org.apache.log4j.Logger;
 
 import java.time.Instant;
@@ -25,6 +26,7 @@ public class CarLane {
 
     void addLast(Order order){
         order.setCarLaneHardCode(hardCode);
+        order.setCarLaneIndex(laneIndex);
         waitExecuteOfOrders.add(order);
     }
 
@@ -59,7 +61,13 @@ public class CarLane {
             logger.error("don't find index="+index+"order");
             return false;
         }
-        waitExecuteOfOrders.set(index,neworder);
+//        waitExecuteOfOrders.set(index,neworder);no replace ,just update part properties
+        oldorder.setVehicleno(neworder.getVehicleno());
+        oldorder.setMaterial(neworder.getMaterial());
+        oldorder.setTotal_amount(neworder.getTotal_amount());
+        oldorder.setConsumer_code(neworder.getConsumer_code());
+        oldorder.setBatch_no(neworder.getBatch_no());
+        oldorder.setBillcode(neworder.getBillcode());
         return true;
     }
 

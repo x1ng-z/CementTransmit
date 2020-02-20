@@ -7,6 +7,7 @@ package hs.modle;
  */
 
 import hs.modle.order.Order;
+import hs.modle.order.PackManulOrder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -19,6 +20,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class UnassignOrderList {
 
     private List<Order> unsignOrder=new CopyOnWriteArrayList<>();
+
+    public List<Order> getAllUnassignOrders(){
+        return unsignOrder;
+    }
+
     public boolean addUnsignOrder(Order order){
         unsignOrder.add(order);
         return true;
@@ -29,7 +35,14 @@ public class UnassignOrderList {
     }
 
     public void modifyOrder(int index,Order newOrder){
-        unsignOrder.set(index,newOrder);
+        Order oldOrder=unsignOrder.get(index);
+        oldOrder.setVehicleno(newOrder.getVehicleno());
+        oldOrder.setMaterial(newOrder.getMaterial());
+        oldOrder.setTotal_amount(newOrder.getTotal_amount());
+//                new_order.setAlready_amount(old_order.getAlready_amount());
+        oldOrder.setConsumer_code(newOrder.getConsumer_code());
+        oldOrder.setBatch_no(newOrder.getBatch_no());
+        oldOrder.setBillcode(newOrder.getBillcode());
     }
 
     public Location assignOrder(int index,int productline,int packmachine,int carline){
