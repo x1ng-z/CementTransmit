@@ -16,7 +16,7 @@
             <id property="id" column="lane_id"/>
             <result property="hardCode" column="hardCode"/>
             <result property="commentZh" column="carlaneCommentZh"/>
-            <result property="laneIndex" column="laneoOrder"/>
+            <result property="laneIndex" column="laneOrder"/>
         </collection >
     </resultMap>
 
@@ -33,7 +33,7 @@
           lane.id as lane_id,
           lane.hardCode,
           lane. commentZh as carlaneCommentZh,
-          lane.laneoOrder from device left join  lane on device.id = lane.device_id;
+          lane.laneOrder from device left join  lane on device.deviceOrder = lane.device_id;
     </select>
 
 </mapper>
