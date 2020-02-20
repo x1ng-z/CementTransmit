@@ -326,7 +326,7 @@ public class DateSelector extends JButton {
                 dialog = createDialog(owner);
             dialog.setLocation(getAppropriateLocation(owner, position));
             flushWeekAndDay();
-            dialog.show();
+            dialog.setVisible(true);
         }
 
 

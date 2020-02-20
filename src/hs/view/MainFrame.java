@@ -55,45 +55,32 @@ public class MainFrame extends JFrame {
 
     void build(){
         centerPanel.removeAll();
+
         int countOfPackMachine=orderOperateService.getPackMAchineGroup().getProductLineMaps().get(gproductline).getDeviceMaps().size();
         GridLayout gridLayout1 = new GridLayout(1, 3, (int) round(10 * sizecoeW), (int) round(0 * sizecoeH));
 //        FlowLayout gridLayout1=new FlowLayout();
         centerPanel.setLayout(gridLayout1);
         centerPanels=new java.util.ArrayList<CenterPanel>();
-//        car_Table1 = new AssignOrderTable();
-//        car_Table2 = new AssignOrderTable();
-//        car_Table3 = new AssignOrderTable();
+        Toolkit kit = Toolkit.getDefaultToolkit();
+        Dimension screenSize = kit.getScreenSize();
+
+        centerPanel.setPreferredSize(new Dimension(orderOperateService.getPackMAchineGroup().getProductLineMaps().get(gproductline).getDeviceMaps().size()*screenSize.width/3 - (int) round(15 * sizecoeW), (int) round(490 * sizecoeH)));
+
+
         Border etchedborder = BorderFactory.createEtchedBorder(EtchedBorder.RAISED);
         Border etchedBorderL = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
         Map<Integer,PackMachine> deviceMaps=orderOperateService.getPackMAchineGroup().getProductLineMaps().get(getGproductline()).getDeviceMaps();
+        System.out.println("build size="+deviceMaps.size());
         for(PackMachine packMachine:deviceMaps.values()){
             AssignOrderTable assignOrderTable=new AssignOrderTable();
             CenterPanel panel=new CenterPanel(packMachine,sizecoeH, sizecoeW, gproductline,assignOrderTable, this,orderOperateService);
             panel.setBorder(etchedborder);
             panel.setLayout(null);
+            panel.setPreferredSize(new Dimension(screenSize.width/3,(int) round(490 * sizecoeH)));
 
             centerPanels.add(panel);
             centerPanel.add(panel);
         }
-
-
-
-
-
-//        first_Panel = new CenterPanel(machine_1, sizecoeH, sizecoeW, "1", car_Table1, unassignOrderTable, machineIfo_1.getName());
-//        first_Panel.setBorder(etchedborder);
-//        first_Panel.setLayout(null);
-//        centerPanel.add(first_Panel);
-//
-//        second_Panel = new CenterPanel(machine_2, sizecoeH, sizecoeW, "2", car_Table2, unassignOrderTable, machineIfo_2.getName());
-//        second_Panel.setBorder(etchedborder);
-//        second_Panel.setLayout(null);
-//        centerPanel.add(second_Panel);
-//
-//        third_Panel = new CenterPanel(machine_3, sizecoeH, sizecoeW, "3", car_Table3, unassignOrderTable, machineIfo_3.getName());
-//        third_Panel.setBorder(etchedborder);
-//        third_Panel.setLayout(null);
-//        centerPanel.add(third_Panel);
 
 
     }
@@ -209,15 +196,31 @@ public class MainFrame extends JFrame {
         modelPanel.add(radioBtn1);
         modelPanel.add(radioBtn2);
 
-        String[] proline_list = new String[]{
-                "一线","二线", "三线"};
+        int plnumber=orderOperateService.getPackMAchineGroup().getProductLineMaps().size();
+        String[] proline_list = new String[plnumber];
+        for(int i=0;i<plnumber;++i){
+            proline_list[i]=(i+1)+"线";
+        }
         JComboBox<String> proline_box = new JComboBox<String>(proline_list);
         proline_box.setFont(font14);
         proline_box.setBounds((int) round(260 * sizecoeW), (int) round(4 * sizecoeH), (int) round(130 * sizecoeW), (int) round(30 * sizecoeH));
         topPanel.add(proline_box);
+        proline_box.setSelectedIndex(0);
+        proline_box.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                // 只处理选中的状态
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    System.out.println("选中: " + proline_box.getSelectedIndex() + " = " + proline_box.getSelectedItem());
+                    gproductline=proline_box.getSelectedIndex()+1;
+                    build();
+                }
+            }
+        });
+
 
         currentTimeLabel = new CurrentTimeLabel();
-        currentTimeLabel.setBounds((int) round(1260 * sizecoeW), (int) round(8 * sizecoeH), (int) round(290 * sizecoeW), (int) round(40 * sizecoeH));
+        currentTimeLabel.setBounds((int) round(1220 * sizecoeW), (int) round(8 * sizecoeH), (int) round(320 * sizecoeW), (int) round(40 * sizecoeH));
         currentTimeLabel.setOpaque(true);
         currentTimeLabel.setBackground(Color.black);
         topPanel.add(currentTimeLabel);
