@@ -3,7 +3,6 @@ package hs.view;
 
 import hs.modle.Location;
 import hs.modle.PackMachine;
-import hs.modle.order.Order;
 import hs.modle.order.PackManulOrder;
 import hs.service.OrderOperateService;
 
@@ -265,7 +264,7 @@ public class OrderModifyFrameInAssign extends JDialog {
 //
 //                    }
 //                }
-                mainFrame.flush_table();
+                mainFrame.flushAssignOrderTable();
                 dispose();
             }
         });

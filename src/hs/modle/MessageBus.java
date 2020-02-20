@@ -12,7 +12,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  * @date 2020/2/18 9:46
  */
 
-@Component()
+@Component("messageBus")
 public class MessageBus {
     public static Logger logger = Logger.getLogger(MessageBus.class);
     final LinkedBlockingQueue<Message> messagequeue=new LinkedBlockingQueue();
@@ -35,7 +35,7 @@ public class MessageBus {
                         Message message=messagequeue.take();
                         System.out.println("Send To: "+message.getSendTo());
                         for(int i=0;i<message.getContext().length;++i) {
-                            System.out.println("message context: "+i+""+message.getContext()[i]);
+                            System.out.println("message context: ["+i+"] "+Integer.toString(message.getContext()[i]&0xff,16));
                         }
                     } catch (InterruptedException e) {
                         logger.error(e);

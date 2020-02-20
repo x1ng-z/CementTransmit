@@ -1,9 +1,11 @@
 package hs.configuration;
 
 import hs.dao.Packer;
+import hs.modle.MessageBus;
 import hs.modle.PackMAchineGroup;
 import hs.modle.PackerConfigure;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
@@ -29,8 +31,9 @@ public class SpringAnnotionConfigure {
      * @Link PackMAchineGroup 内部包含设备线别、线别中包含包装机设备；
      * */
     @Bean("packMAchineGroup")
-    public PackMAchineGroup buildPackMachineGroup(){
-        return PackMAchineGroup.build(packer.getPackerConfigure());
+    @Qualifier("messageBus")
+    public PackMAchineGroup buildPackMachineGroup(MessageBus messageBus){
+        return PackMAchineGroup.build(packer.getPackerConfigure(),messageBus);
     }
 
 

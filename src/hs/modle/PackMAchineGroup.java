@@ -14,7 +14,7 @@ public class PackMAchineGroup {
    private Map<Integer,ProductLine> productLineMaps=new ConcurrentHashMap<>();
 
 
-    public static PackMAchineGroup build(Map<Integer,PackerConfigure> packerConfigureMap){
+    public static PackMAchineGroup build(Map<Integer,PackerConfigure> packerConfigureMap,MessageBus messageBus){
         PackMAchineGroup packMAchineGroup=new PackMAchineGroup();
         ExecutorService executor =Executors.newCachedThreadPool(new ThreadFactory(){
             @Override
@@ -29,13 +29,13 @@ public class PackMAchineGroup {
             if(packMAchineGroup.productLineMaps.containsKey(packerConfigure.getProductLine())){
                 //已经包含了，直接添加包装机
                 ProductLine existProductLine=packMAchineGroup.productLineMaps.get(packerConfigure.getProductLine());
-                PackMachine newPackMachine=PackMachine.build(packerConfigure,executor);
+                PackMachine newPackMachine=PackMachine.build(packerConfigure,executor,messageBus);
                 existProductLine.putPackMachine(newPackMachine);
             }else {
                 //含没有新建相关产线，需要先新建产线后加入
                 ProductLine newProductLine=new ProductLine(packerConfigure.getProductLine());
                 packMAchineGroup.productLineMaps.put(packerConfigure.getProductLine(),newProductLine);
-                PackMachine newPackMachine=PackMachine.build(packerConfigure,executor);
+                PackMachine newPackMachine=PackMachine.build(packerConfigure,executor,messageBus);
                 newProductLine.putPackMachine(newPackMachine);
             }
 
@@ -48,7 +48,9 @@ public class PackMAchineGroup {
      * @location
      * */
     public boolean addSolver(Location location){
-        return productLineMaps.get(location.getProductionLine()).deviceMaps.get(location.getPackmachineIndex()).addOrder(location.getCarLaneIndex(),location.getValue());
+        PackMachine packMachine=productLineMaps.get(location.getProductionLine()).deviceMaps.get(location.getPackmachineIndex());
+        location.getValue().setClass_no(packMachine.defaultClass+"");
+        return packMachine.addOrder(location.getCarLaneIndex(),location.getValue());
     }
 
     public Order unassignSolver(Location location,int index){

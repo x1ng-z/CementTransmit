@@ -252,7 +252,7 @@ public class OrderModifyFrameInUnassign extends JDialog {
 //                    new_order.setPk_delivery(old_order.getPk_delivery());
 
 //                    Pack_UnssigedList_Manager.getInstance().modify(edit_row,new_order);
-                    mainFrame.flush_table();
+                    mainFrame.flushAssignOrderTable();
                     dispose();
             }
         });

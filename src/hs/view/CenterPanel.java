@@ -53,23 +53,23 @@ public class CenterPanel extends JPanel {
         firstP_p1.setLayout(null);
         add(firstP_p1);
 
-        JButton oneline_stop = new JButton(line_No + "号线停止");
-        oneline_stop.setBounds((int) round(30 * sizecoeW), (int) round(5 * sizecoeH), (int) round(90 * sizecoeW), (int) round(30 * sizecoeH));
-        oneline_stop.setBorder(raisedBevelBorder);
-        oneline_stop.setBackground(new Color(238, 238, 238));
+//        JButton oneline_stop = new JButton(line_No + "号线停止");
+//        oneline_stop.setBounds((int) round(30 * sizecoeW), (int) round(5 * sizecoeH), (int) round(90 * sizecoeW), (int) round(30 * sizecoeH));
+//        oneline_stop.setBorder(raisedBevelBorder);
+//        oneline_stop.setBackground(new Color(238, 238, 238));
 
-        JLabel oneline = new JLabel(line_No + "# 包装线", JLabel.CENTER);
+        JLabel oneline = new JLabel(pack_machine.getPackerConfigure().getCommentZh() , JLabel.CENTER);
         oneline.setFont(font20);
         oneline.setBounds((int) round(190 * sizecoeW), (int) round(5 * sizecoeH), (int) round(120 * sizecoeW), (int) round(30 * sizecoeH));
 
-        JButton oneline_start = new JButton(line_No + "号线启用");
-        oneline_start.setBounds((int) round(380 * sizecoeW), (int) round(5 * sizecoeH), (int) round(90 * sizecoeW), (int) round(30 * sizecoeH));
-        oneline_start.setBorder(raisedBevelBorder);
-        oneline_start.setBackground(new Color(238, 238, 238));
+//        JButton oneline_start = new JButton(line_No + "号线启用");
+//        oneline_start.setBounds((int) round(380 * sizecoeW), (int) round(5 * sizecoeH), (int) round(90 * sizecoeW), (int) round(30 * sizecoeH));
+//        oneline_start.setBorder(raisedBevelBorder);
+//        oneline_start.setBackground(new Color(238, 238, 238));
 
-        firstP_p1.add(oneline_stop);
+//        firstP_p1.add(oneline_stop);
         firstP_p1.add(oneline);
-        firstP_p1.add(oneline_start);
+//        firstP_p1.add(oneline_start);
 
 
         /*-------------firstP_p2---------------*/
@@ -248,7 +248,6 @@ public class CenterPanel extends JPanel {
             case 6:
                 classSelect.setSelected(radioBtn6.getModel(), true);
                 break;
-
         }
 
         firstP_p4.add(radioBtn1);
@@ -321,7 +320,7 @@ public class CenterPanel extends JPanel {
                     location.setProductionLine(pack_machine.getPackerConfigure().getProductLine());
                     location.setCarLaneIndex(Integer.parseInt(assignOrderTable.getValueAt(selected_row, 1).toString()));
                     orderOperateService.unassignOrderInPackList(location,selected_row);
-                    mainFrame.flush_table();
+                    mainFrame.flushAssignOrderTable();
 
 //                    String row_0 = assignOrderTable.getValueAt(selected_row, 0).toString();
 //                    String row_1 = assignOrderTable.getValueAt(selected_row, 1).toString();
@@ -342,7 +341,7 @@ public class CenterPanel extends JPanel {
 //                            carline_Table.defaultModel.insertRow(carline_Table.defaultModel.getRowCount(), new Object[]{row_0, "null", row_2, row_3, row_4, row_5, row_6, row_7,row_8});
 //                            assignOrderTable.defaultModel.removeRow(selected_row);
 //                        }
-//                        MainFrame.getinstance().flush_table();
+//                        MainFrame.getinstance().flushAssignOrderTable();
 //
 //                    }
 
@@ -394,7 +393,7 @@ public class CenterPanel extends JPanel {
                     location.setPackmachineIndex(pack_machine.getPackerConfigure().getDeviceOrder());
                     location.setCarLaneIndex(Integer.valueOf(assignOrderTable.getValueAt(selected_row, 1).toString()));
                     orderOperateService.delectOrderInPackList(location,selected_row);
-                    mainFrame.flush_table();
+                    mainFrame.flushAssignOrderTable();
 
 //                    Map<String, Pack_Machine> machines = Machine_Manger.getInstance().getPack_machines();
 //                    Pack_Machine pick = null;
@@ -408,7 +407,7 @@ public class CenterPanel extends JPanel {
 //                        boolean is_success = pick.closeOrder(new Integer(assignOrderTable.getValueAt(selected_row, 1).toString()), pack_manulOrder);
 //                        if (is_success) {
 //                            assignOrderTable.defaultModel.removeRow(selected_row);
-//                            MainFrame.getinstance().flush_table();
+//                            MainFrame.getinstance().flushAssignOrderTable();
 //                        }
 //                    }
                 }
@@ -416,18 +415,18 @@ public class CenterPanel extends JPanel {
         });
 
         /*-------------firstP_p6---------------*/
-        JPanel firstP_p6 = new JPanel();
-        firstP_p6.setBounds((int) round(5 * sizecoeW), (int) round(475 * sizecoeH), (int) round(505 * sizecoeW), (int) round(60 * sizecoeH));
-        firstP_p3.setBorder(etchedBorder);
-        firstP_p6.setLayout(null);
-        add(firstP_p6);
-
-        JList carline_list = new JList();
-        JScrollPane carline_list_pane = new JScrollPane(carline_list);
-        carline_list_pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        carline_list_pane.setBounds((int) round(0 * sizecoeW), (int) round(0 * sizecoeH), (int) round(505 * sizecoeW), (int) round(60 * sizecoeH));
-
-        firstP_p6.add(carline_list_pane);
+//        JPanel firstP_p6 = new JPanel();
+//        firstP_p6.setBounds((int) round(5 * sizecoeW), (int) round(475 * sizecoeH), (int) round(505 * sizecoeW), (int) round(60 * sizecoeH));
+//        firstP_p3.setBorder(etchedBorder);
+//        firstP_p6.setLayout(null);
+//        add(firstP_p6);
+//
+//        JList carline_list = new JList();
+//        JScrollPane carline_list_pane = new JScrollPane(carline_list);
+//        carline_list_pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+//        carline_list_pane.setBounds((int) round(0 * sizecoeW), (int) round(0 * sizecoeH), (int) round(505 * sizecoeW), (int) round(60 * sizecoeH));
+//
+//        firstP_p6.add(carline_list_pane);
 
         JPopupMenu addbag = new JPopupMenu();
         JMenuItem menuItem = new JMenuItem("补包");
@@ -454,7 +453,7 @@ public class CenterPanel extends JPanel {
         java.util.List<Order> ssigned_queue = pack_machine.getAllSortOrder();
         for (int i = 0; i < ssigned_queue.size(); ++i) {
             Order order = ssigned_queue.get(i);
-            assignOrderTable.defaultModel.insertRow(i, new Object[]{order.getVehicleno(), order.getCarLaneIndex() == 0 ? "null" : order.getCarLaneIndex()+"", order.getMaterial(), new Integer(order.getTotal_amount()).toString(), new Integer(order.getAlready_amount()).toString(), order.getConsumer_code(), order.getBatch_no(), order.getBatch_no(),order.getPk_delivery()});
+            assignOrderTable.defaultModel.insertRow(i, new Object[]{order.getVehicleno(), order.getCarLaneIndex() == 0 ? "null" : order.getCarLaneIndex()+"", order.getMaterial(),  Integer.valueOf(order.getTotal_amount()).toString(), Integer.valueOf(order.getAlready_amount()).toString(), order.getConsumer_code(), order.getBatch_no(), order.getBatch_no(),order.getPk_delivery()});
         }
     }
 
@@ -488,19 +487,20 @@ public class CenterPanel extends JPanel {
                 order.setClass_no( e.getActionCommand());
             }
             pack_machine.defaultClass= Integer.parseInt(e.getActionCommand());
-            mainFrame.flush_table();
+            mainFrame.flushAssignOrderTable();
         }
     }
 
-    public void flush_title_ifo() {
-
-//        {typeName_F,COM_F,car_No_F,pre_load_F,car_lane_F,cement_type_F,deliver_No_F,code_con_F}
+    public void flushPackMahineExecuteOrder() {
         Order order=null;
-        if(pack_machine.getAllSortOrder().size()!=0){
-            order=pack_machine.getAllSortOrder().get(0);
+        if(pack_machine.getCurrentExecuteOrder()!=null){
+            order=pack_machine.getCurrentExecuteOrder();
+        }else {
+            if(pack_machine.getAllSortOrder().size()!=0){
+                order=pack_machine.getAllSortOrder().get(0);
+            }
         }
 
-//        logger.info("in flush_title_ifo");
         if (order == null) {
             textFieldsArray[0].setText("");
             textFieldsArray[1].setText("");
@@ -516,14 +516,13 @@ public class CenterPanel extends JPanel {
             textFieldsArray[0].setText(order.getMaterial());
             textFieldsArray[1].setText("COM_F");
             textFieldsArray[2].setText(order.getVehicleno());
-            textFieldsArray[3].setText(new Integer(order.getTotal_amount()).toString());
-            textFieldsArray[4].setText(order.getLaneno_alias().toString());
+            textFieldsArray[3].setText(Integer.valueOf(order.getTotal_amount()).toString());
+            textFieldsArray[4].setText(order.getCarLaneIndex()+"");
             textFieldsArray[5].setText(order.getMaterial());
             textFieldsArray[6].setText(order.getBillcode());
             //code
             textFieldsArray[7].setText(order.getConsumer_code() + order.getCreate_time_form_mmdd() + order.getClass_no() + order.getProductLineIndex() + order.getBatch_no());
-            textFieldsArray[8].setText(new Integer(order.getAlready_amount()).toString());
-
+            textFieldsArray[8].setText(Integer.valueOf(order.getAlready_amount()).toString());
         }
 
     }

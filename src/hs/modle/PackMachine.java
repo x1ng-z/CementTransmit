@@ -38,9 +38,10 @@ public class PackMachine implements Runnable {
     @Autowired
     private MessageBus messageBus;
 
-    public PackMachine(PackerConfigure packerConfigure,Executor executor) {
+    public PackMachine(PackerConfigure packerConfigure,Executor executor,MessageBus messageBus) {
         this.packerConfigure = packerConfigure;
         this.executor=executor;
+        this. messageBus= messageBus;
         this.deviceOrder = packerConfigure.getDeviceOrder();
     }
 
@@ -57,7 +58,7 @@ public class PackMachine implements Runnable {
         List<Order> list = new ArrayList<Order>();
         CarLane[] carLaneSortByFirstOrder=new CarLane [packerConfigure.getCarLanes().size()];
         int j=0;
-        int maxCountOneLane=0;
+        int maxCountOneLane=0;//车道内最大订单数量
         for (int i=0 ;i<packerConfigure.getCarLanes().size();i++){
             //车道内是否有订单
             if(packerConfigure.getCarLanes().get(i).getWaitExecuteOfOrders().size()!=0){
@@ -89,11 +90,14 @@ public class PackMachine implements Runnable {
 
 
 
-        for(int i=0;i<maxCountOneLane;i--){
+        for(int i=0;i<maxCountOneLane;i++){
             for(CarLane carLane:carLaneSortByFirstOrder){
-                if(i<carLane.getWaitExecuteOfOrders().size()){
-                    list.add(carLane.getWaitExecuteOfOrders().get(i));
+                if(carLane!=null){
+                    if(i<carLane.getWaitExecuteOfOrders().size()){
+                        list.add(carLane.getWaitExecuteOfOrders().get(i));
+                    }
                 }
+
             }
         }
 
@@ -170,8 +174,8 @@ public class PackMachine implements Runnable {
     /**
      * 包装机构建类
      */
-    public static PackMachine build(PackerConfigure packerConfigure,Executor executor) {
-        PackMachine packMachine = new PackMachine(packerConfigure,executor);
+    public static PackMachine build(PackerConfigure packerConfigure,Executor executor,MessageBus messageBus) {
+        PackMachine packMachine = new PackMachine(packerConfigure,executor,messageBus);
         packMachine.lanePipe = new LanePipe();
         for (CarLane carLane : packerConfigure.getCarLanes()) {
             packMachine.lanePipe.addLast(carLane.getCommentZh(), carLane);
