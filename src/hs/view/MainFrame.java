@@ -45,6 +45,7 @@ public class MainFrame extends JFrame {
     private java.util.List<CenterPanel> centerPanels;
     private CurrentTimeLabel currentTimeLabel;
     JPanel centerPanel;
+    JScrollPane wappercenterPanel;
     private int productline=1;
 
 //    private static volatile MainFrame mainFrame=null;
@@ -58,6 +59,10 @@ public class MainFrame extends JFrame {
 
     void build(){
         centerPanel.removeAll();
+        int countOfPackMachine=orderOperateService.getPackMAchineGroup().getProductLineMaps().get(productline).getDeviceMaps().size();
+        GridLayout gridLayout1 = new GridLayout(1, 3, (int) round(10 * sizecoeW), (int) round(0 * sizecoeH));
+//        FlowLayout gridLayout1=new FlowLayout();
+        centerPanel.setLayout(gridLayout1);
         centerPanels=new java.util.ArrayList<CenterPanel>();
 //        car_Table1 = new AssignOrderTable();
 //        car_Table2 = new AssignOrderTable();
@@ -69,12 +74,12 @@ public class MainFrame extends JFrame {
             AssignOrderTable assignOrderTable=new AssignOrderTable();
             CenterPanel panel=new CenterPanel(packMachine,sizecoeH, sizecoeW,1,assignOrderTable, this,orderOperateService);
             panel.setBorder(etchedborder);
-//            first_Panel.setLayout(null);
+            panel.setLayout(null);
 
             centerPanels.add(panel);
             centerPanel.add(panel);
         }
-//        new JScrollPane(centerPanels);
+
 
 
 
@@ -159,7 +164,6 @@ public class MainFrame extends JFrame {
         Border raisedBevelBorder = BorderFactory.createRaisedBevelBorder();
         Border titleBorderL = BorderFactory.createTitledBorder(etchedBorderL, "待分配列表", TitledBorder.LEFT, TitledBorder.TOP, font18);
         Border titleBorderR = BorderFactory.createTitledBorder(etchedBorderL, "车辆信息录入", TitledBorder.LEFT, TitledBorder.TOP, font18);
-        GridLayout gridLayout1 = new GridLayout(1, 3, (int) round(10 * sizecoeW), (int) round(0 * sizecoeH));
         GridLayout gridLayout2 = new GridLayout(4, 2, (int) round(20 * sizecoeW), (int) round(5 * sizecoeH));
 
         /*---------------软件菜单选项-------------*/
@@ -239,10 +243,17 @@ public class MainFrame extends JFrame {
 
         /*---------------中间面板内容-----------*/
         centerPanel = new JPanel();
-        centerPanel.setBounds((int) round(5 * sizecoeW), (int) round(60 * sizecoeH), screenWidth - (int) round(15 * sizecoeW), (int) round(540 * sizecoeH));
+
+        centerPanel.setPreferredSize(new Dimension(orderOperateService.getPackMAchineGroup().getProductLineMaps().get(productline).getDeviceMaps().size()*screenWidth/3 - (int) round(15 * sizecoeW), (int) round(540 * sizecoeH)));
+//        centerPanel.setBounds((int) round(5 * sizecoeW), (int) round(60 * sizecoeH), 2*screenWidth - (int) round(15 * sizecoeW), (int) round(540 * sizecoeH));
         centerPanel.setBorder(etchedborder);
-        centerPanel.setLayout(gridLayout1);
-        add(centerPanel);
+
+        wappercenterPanel=new JScrollPane(centerPanel);
+
+        wappercenterPanel.setBounds((int) round(5 * sizecoeW), (int) round(60 * sizecoeH), screenWidth - (int) round(15 * sizecoeW), (int) round(540 * sizecoeH));
+        wappercenterPanel.setBorder(etchedborder);
+
+        add(wappercenterPanel);//modify by zzx
 
 
 //        HashMap<String, Machine_Ifo> machine_ifo = Machine_Ifo_by_xml.get_machine_ifo();
