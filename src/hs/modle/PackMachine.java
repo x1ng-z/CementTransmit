@@ -34,6 +34,7 @@ public class PackMachine implements Runnable {
 
     private Executor executor;
     private int deviceOrder;
+    private boolean isDevicdConnect=false;
 
     @Autowired
     private MessageBus messageBus;
@@ -190,8 +191,12 @@ public class PackMachine implements Runnable {
      * 判断是否存在需要下发的订单,这种方式必须要求两个车道一边装一次
      */
 
-    //ToDO  把两个车道的首个订单，找出来，然后准备同于下发；
+    //ToDO  把两个车道的首个订单，找出来，然后准备一同下发；
     public void checkNeedExecuteOrderByRecycle() {
+        if(!isDevicdConnect){
+           logger.debug(getPackerConfigure().deviceIp+" disconnect so don't check order");
+            return;
+        }
 
         /**
          *包装机定位包装机第一个订单，从该车道开始查找第一个订单数据
@@ -223,13 +228,13 @@ public class PackMachine implements Runnable {
             checklocal = checkContextstart;
             do {
                 Order waitExecuteOrder = checkContextstart.getLane().getFistOrder();
-                if (waitExecuteOrder != null && (!waitExecuteOrder.getCreate_time().equals(checkContextstart.getLane().getLastAssignOrderAssignTime()))) {
+                if (waitExecuteOrder != null && (!waitExecuteOrder.getAssign_time().equals(checkContextstart.getLane().getLastAssignOrderAssignTime()))) {
                     Message message = new Message();
                     message.setContext(Command.SEND_ORDER.build(waitExecuteOrder));
                     message.setSendTo(packerConfigure.getDeviceIp());
                     messageBus.putMessage(message);
                     //update
-                    checkContextstart.getLane().setLastAssignOrderAssignTime(waitExecuteOrder.getCreate_time());
+                    checkContextstart.getLane().setLastAssignOrderAssignTime(waitExecuteOrder.getAssign_time());
                 }
                 checkContextstart = checkContextstart.next;
                 if (checkContextstart.equals(lanePipe.tail)) {
@@ -260,5 +265,13 @@ public class PackMachine implements Runnable {
 
     public PackerConfigure getPackerConfigure() {
         return packerConfigure;
+    }
+
+    public boolean isDevicdConnect() {
+        return isDevicdConnect;
+    }
+
+    public void setDevicdConnect(boolean devicdConnect) {
+        isDevicdConnect = devicdConnect;
     }
 }

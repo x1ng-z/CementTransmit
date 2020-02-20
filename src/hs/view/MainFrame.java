@@ -70,7 +70,6 @@ public class MainFrame extends JFrame {
         Border etchedborder = BorderFactory.createEtchedBorder(EtchedBorder.RAISED);
         Border etchedBorderL = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
         Map<Integer,PackMachine> deviceMaps=orderOperateService.getPackMAchineGroup().getProductLineMaps().get(getGproductline()).getDeviceMaps();
-        System.out.println("build size="+deviceMaps.size());
         for(PackMachine packMachine:deviceMaps.values()){
             AssignOrderTable assignOrderTable=new AssignOrderTable();
             CenterPanel panel=new CenterPanel(packMachine,sizecoeH, sizecoeW, gproductline,assignOrderTable, this,orderOperateService);
@@ -161,10 +160,9 @@ public class MainFrame extends JFrame {
         topPanel.setBorder(etchedborder);
         topPanel.setLayout(null);
         add(topPanel);
-
-        JLabel ouputLabel = new JLabel("产量统计");
+        JLabel ouputLabel = new JLabel("包装发运系统");
         ouputLabel.setFont(font22);
-        ouputLabel.setBounds((int) round(750 * sizecoeW), (int) round(10 * sizecoeH), (int) round(120 * sizecoeW), (int) round(40 * sizecoeH));
+        ouputLabel.setBounds((int) round(750 * sizecoeW), (int) round(10 * sizecoeH), (int) round(300 * sizecoeW), (int) round(40 * sizecoeH));
         topPanel.add(ouputLabel);
 
         JPanel modelPanel = new JPanel();
@@ -211,7 +209,7 @@ public class MainFrame extends JFrame {
             public void itemStateChanged(ItemEvent e) {
                 // 只处理选中的状态
                 if (e.getStateChange() == ItemEvent.SELECTED) {
-                    System.out.println("选中: " + proline_box.getSelectedIndex() + " = " + proline_box.getSelectedItem());
+                    logger.info("选中: " + proline_box.getSelectedIndex() + " = " + proline_box.getSelectedItem());
                     gproductline=proline_box.getSelectedIndex()+1;
                     build();
                 }
@@ -291,7 +289,6 @@ public class MainFrame extends JFrame {
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
                 AbstractButton abstractButton=(AbstractButton)e.getSource();
-                System.out.println("haha"+abstractButton.getText());
                 if (e.getButton() == MouseEvent.BUTTON1) {
                    logger.info("修改");
 
@@ -470,7 +467,7 @@ public class MainFrame extends JFrame {
             public void itemStateChanged(ItemEvent e) {
                 // 只处理选中的状态
                 if (e.getStateChange() == ItemEvent.SELECTED) {
-                    System.out.println("选中: " + cement_type_box.getSelectedIndex() + " = " + cement_type_box.getSelectedItem());
+                    logger.info("选中: " + cement_type_box.getSelectedIndex() + " = " + cement_type_box.getSelectedItem());
                 }
             }
         });
@@ -490,7 +487,7 @@ public class MainFrame extends JFrame {
             @Override
             public void focusLost(FocusEvent e) {
                 super.focusLost(e);
-                System.out.println(custom_No_F.getText());
+                logger.info(custom_No_F.getText());
                 if(custom_No_F.getText().equals("0")||custom_No_F.getText().equals("")){
                     custom_No_F.setText("0");
                 }
@@ -593,6 +590,20 @@ public class MainFrame extends JFrame {
 
 
         build();
+
+        java.util.Timer timer = new java.util.Timer();
+        timer.schedule(new TimerTask() {
+            public void run() {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        logger.debug("flushPacksExecuteCondition execute");
+                        MainFrame.this.flushPacksExecuteCondition();
+                    }
+                });
+
+
+            }
+        }, 1000, 2000);// 设定指定的时间time,此处为2000毫秒
     }
 
     /*---------------创建分配包装线车道的对话框-----------*/
@@ -637,63 +648,8 @@ public class MainFrame extends JFrame {
 
         }
 
-
-//        JLabel lineP_L2 = new JLabel(machineIfo_2.getName());
-//        lineP_L2.setFont(font16);
-//        lineP_L2.setBounds((int) round(55 * sizecoeW), (int) round(5 * sizecoeH), (int) round(90 * sizecoeW), (int) round(40 * sizecoeH));
-//
-//
-//        Carline_Btn carlineP_L2_btn3 = new Carline_Btn(car_Table2, message_Arr, machineIfo_2.getName(), machineIfo_2.getLaneno1_alias(), selected_row, dialog);
-//        lineP_L2_btn3 = new JButton("车道口"+machineIfo_2.getLaneno1_alias());
-//        lineP_L2_btn3.setBounds((int) round(5 * sizecoeW), (int) round(50 * sizecoeH), (int) round(85 * sizecoeW), (int) round(35 * sizecoeH));
-//        lineP_L2_btn3.addActionListener(carlineP_L2_btn3);
-//
-//        Carline_Btn carlineP_L2_btn4 = new Carline_Btn(car_Table2, message_Arr, machineIfo_2.getName(), machineIfo_2.getLaneno2_alias(), selected_row, dialog);
-//        lineP_L2_btn4 = new JButton("车道口"+machineIfo_2.getLaneno2_alias());
-//        lineP_L2_btn4.setBounds((int) round(95 * sizecoeW), (int) round(50 * sizecoeH), (int) round(85 * sizecoeW), (int) round(35 * sizecoeH));
-//        lineP_L2_btn4.addActionListener(carlineP_L2_btn4);
-//        lineP_2.add(lineP_L2);
-//        lineP_2.add(lineP_L2_btn3);
-//        lineP_2.add(lineP_L2_btn4);
-//
-//        JLabel lineP_L3 = new JLabel(machineIfo_3.getName());
-//        lineP_L3.setFont(font16);
-//        lineP_L3.setBounds((int) round(55 * sizecoeW), (int) round(5 * sizecoeH), (int) round(90 * sizecoeW), (int) round(40 * sizecoeH));
-//
-//        Carline_Btn carlineP_L3_btn5 = new Carline_Btn(car_Table3, message_Arr, machineIfo_3.getName(), machineIfo_3.getLaneno1_alias(), selected_row, dialog);
-//        lineP_L3_btn5 = new JButton("车道口"+machineIfo_3.getLaneno1_alias());
-//        lineP_L3_btn5.setBounds((int) round(5 * sizecoeW), (int) round(50 * sizecoeH), (int) round(85 * sizecoeW), (int) round(35 * sizecoeH));
-//        lineP_L3_btn5.addActionListener(carlineP_L3_btn5);
-//
-//        Carline_Btn carlineP_L3_btn6 = new Carline_Btn(car_Table3, message_Arr, machineIfo_3.getName(), machineIfo_3.getLaneno2_alias(), selected_row, dialog);
-//        lineP_L3_btn6 = new JButton("车道口"+machineIfo_3.getLaneno2_alias());
-//        lineP_L3_btn6.setBounds((int) round(95 * sizecoeW), (int) round(50 * sizecoeH), (int) round(85 * sizecoeW), (int) round(35 * sizecoeH));
-//        lineP_L3_btn6.addActionListener(carlineP_L3_btn6);
-//        lineP_3.add(lineP_L3);
-//        lineP_3.add(lineP_L3_btn5);
-//        lineP_3.add(lineP_L3_btn6);
-
-//        JButton[] lineP_btnArray = new JButton[]{lineP_L1_btn1, lineP_L1_btn2, lineP_L2_btn3, lineP_L2_btn4, lineP_L3_btn5, lineP_L3_btn6};
-//        for (JButton lineP_btn : lineP_btnArray) {
-//            lineP_btn.setBorder(raisedBevelBorder1);
-//            lineP_btn.setBackground(new Color(238, 238, 238));
-//        }
         dialog.setVisible(true);
         dialog.setAlwaysOnTop(true);
-
-        java.util.Timer timer = new java.util.Timer();
-        timer.schedule(new TimerTask() {
-            public void run() {
-
-                SwingUtilities.invokeLater(new Runnable() {
-                        public void run() {
-                            MainFrame.this.flushPacksExecuteCondition();
-                        }
-                });
-
-
-            }
-        }, 1000, 2000);// 设定指定的时间time,此处为20000毫秒
     }
 
     public int getGproductline() {
@@ -733,76 +689,6 @@ public class MainFrame extends JFrame {
             orderOperateService.assignOrderInUnassignList(this.selectedrow,this.plindex,this.packmachineIndex,this.carlaneindex);
 //            failedDialog(bag_name,carlaneindex);//分配报错
             flushAssignOrderTable();
-
-
-
-
-//            for(Pack_Machine pack_machine:Machine_Manger.getInstance().getPack_machines().values()){
-//
-//                if(pack_machine.getPackage_machine_name().equals(bag_name)){
-//                    unassign.setProduct_line_no(pack_machine.getProduct_line());
-//                }
-//            }
-
-
-//            logger.info("alise" + unassign.getLaneno_alias());
-
-
-//            CenterPanel[] center_list = new CenterPanel[]{first_Panel, second_Panel, third_Panel};
-//            CenterPanel pick_center = null;
-//
-//            for (CenterPanel center : center_list) {
-//                if (center.getName().equals(bag_name)) {
-//                    pick_center = center;
-//
-//                }
-//            }
-//
-//            if (pick_center != null) {
-//                //
-//                logger.info("classno"+pick_center.getClassSelect().getSelection().getActionCommand());
-//                unassign.setClass_no(pick_center.getClassSelect().getSelection().getActionCommand());
-//            }
-//
-//
-//            boolean operation = false;
-//            for (Pack_Machine pack_machine : pack_machines.values()) {
-//
-//                if (pack_machine.getPackage_machine_name().equals(bag_name)) {
-//                    unassign.setProduct_line_no(pack_machine.getProduct_line());
-//                    unassign.setAssign_time(Instant.now());
-//                    operation = pack_machine.addOrder((carlaneindex), unassign);//手动订单数据库在次插入
-//
-//                }
-//            }
-//
-//            if (operation) {
-//                //
-//                logger.info("assign order success");
-//                assignOrderTable.defaultModel.insertRow(assignOrderTable.defaultModel.getRowCount(), new Object[]{messagerow[0], carlaneindex, messagerow[2], messagerow[3], messagerow[4], messagerow[5], messagerow[6], messagerow[7],messagerow[8]});
-//                unassignOrderTable.defaultModel.removeRow(selectedrow);
-//                MainFrame.getinstance().flushAssignOrderTable();
-//            } else {
-//                failedDialog(bag_name, carlaneindex);
-//            }
-
-//            int rows = assignOrderTable.getRowCount();
-//            if(rows==0){
-//                assignOrderTable.defaultModel.insertRow(0,new Object[]{messagerow[0],carlaneindex,messagerow[2],messagerow[3],messagerow[4],messagerow[5],messagerow[6],messagerow[7]});
-//                unassignOrderTable.defaultModel.removeRow(selectedrow);
-//            }
-//            if(rows==1){
-//                String rows_carlane = assignOrderTable.getValueAt(0,1).toString();
-//                if(rows_carlane.equals(carlaneindex)){
-//                    failedDialog(bag_name,carlaneindex);
-//                }else {
-//                    assignOrderTable.defaultModel.insertRow(0,new Object[]{messagerow[0],carlaneindex,messagerow[2],messagerow[3],messagerow[4],messagerow[5],messagerow[6],messagerow[7]});
-//                    unassignOrderTable.defaultModel.removeRow(selectedrow);
-//                }
-//            }
-//            if(rows==2){
-//                failedDialog(bag_name,carlaneindex);
-//            }
             dialog.dispose();
         }
 
@@ -868,6 +754,7 @@ public class MainFrame extends JFrame {
                 flushUnasignOrder();
                 for(CenterPanel centerPanel:centerPanels){
                     centerPanel.flush_assign_order();
+
                 }
             }
         });
@@ -881,6 +768,8 @@ public class MainFrame extends JFrame {
             public void run() {
                 for(CenterPanel centerPanel:centerPanels){
                     centerPanel.flushPackMahineExecuteOrder();
+
+
                 }
             }
         });

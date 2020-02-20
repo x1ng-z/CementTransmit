@@ -113,6 +113,7 @@ public class OrderModifyFrameInAssign extends JDialog {
                 pre_load_F1.setText(String.valueOf(preloadbao));
             }
         });
+        pre_load_F.setEditable(false);
 
 //        pre_load_F1.addFocusListener(new FocusAdapter() {
 //            @Override

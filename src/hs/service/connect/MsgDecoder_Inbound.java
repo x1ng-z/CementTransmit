@@ -1,5 +1,7 @@
 package hs.service.connect;
 
+import hs.service.Command;
+import hs.service.SessionManager;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandler;
@@ -7,6 +9,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.ReferenceCountUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.net.InetSocketAddress;
@@ -18,6 +21,13 @@ public class MsgDecoder_Inbound extends ChannelInboundHandlerAdapter {
     public MsgDecoder_Inbound() {
         super();
     }
+
+    private SessionManager sessionManager;
+
+    @Autowired
+    public void setSessionManager(SessionManager sessionManager) {
+        this.sessionManager = sessionManager;
+    }
 //    @Autowired
 //    public VehicleMapper vehicleMapper;
     @Override
@@ -26,7 +36,14 @@ public class MsgDecoder_Inbound extends ChannelInboundHandlerAdapter {
         InetSocketAddress ipSocket = (InetSocketAddress) ctx.channel().remoteAddress();
         String clientIp = ipSocket.getAddress().getHostAddress();
         Integer port=ipSocket.getPort();
-        logger.info("come in"+clientIp+":"+port);
+        logger.info("come in "+clientIp+":"+port);
+        if (sessionManager.isValideDevice(clientIp)){
+            sessionManager.putHandleContext(clientIp,ctx);
+            sessionManager.getPackMachineMapByIp().get(clientIp).setDevicdConnect(true);
+        }else {
+            ctx.close();
+        }
+
     }
 
     @Override
@@ -36,6 +53,10 @@ public class MsgDecoder_Inbound extends ChannelInboundHandlerAdapter {
         String clientIp = ipSocket.getAddress().getHostAddress();
         Integer port=ipSocket.getPort();
         logger.info("come out"+clientIp+":"+port);
+        if(sessionManager.isValideDevice(clientIp)){
+            sessionManager.getPackMachineMapByIp().get(clientIp).setDevicdConnect(false);
+            sessionManager.removeHandleContext(clientIp);
+        }
     }
 
     @Override
@@ -43,19 +64,34 @@ public class MsgDecoder_Inbound extends ChannelInboundHandlerAdapter {
         ByteBuf wait_for_read = (ByteBuf) msg;
         String getinfo=null;
         getinfo = ByteBufUtil.hexDump(wait_for_read.readBytes(wait_for_read.readableBytes()));
-        logger.info(getinfo);
-        //ctx.fireChannelRead(msg); test
+        switch (getinfo.substring(8,10)){
+            case "06":
+                Command.RECEIVE_COMPLE.analye(getinfo);
+                break;
+            case "07":
+                Command.RECEIVE_KEYSURE.analye(getinfo);
+                break;
+            case "04":
+                Command.RECEIVE_WEIGHT.analye(getinfo);
+                //TODO sessionManager设置当前包装机的正在进行订单
+                break;
+            case "08":
+                Command.RECEIVE_ACKNOWLEDGE.analye(getinfo);
+                break;
+            case "15":
+                Command.RECEIVE_HEARTBEAT.analye(getinfo);
+                break;
+            case "09":
+                Command.RECEIVE_NOORDER.analye(getinfo);
+                break;
+            case "41":
+                Command.RECEIVE_RADIATIONWEIGHT.analye(getinfo);
+                break;
+            default:
+                logger.error("command ="+getinfo.substring(8,10));
+                break;
 
-       /* String carno=Command.RECEIVE_CARDNO.analye(getinfo);
-        if(carno!=null){
-            Vehicle_info vehicle_info =vehicleMapper.find_vehicle_info(carno);
-            if(vehicle_info==null){
-                logger.warn("find null vehicle_info");
-                vehicle_info=new Vehicle_info();
-            }
-            vehicle_info.setTermial(getinfo.substring(8,10));
-            ctx.writeAndFlush(vehicle_info);
-        }*/
+        }
         ReferenceCountUtil.release(msg);
     }
 
@@ -89,6 +125,10 @@ public class MsgDecoder_Inbound extends ChannelInboundHandlerAdapter {
                     break;
             }
         }
+    }
+
+    public SessionManager getSessionManager() {
+        return sessionManager;
     }
 
 }

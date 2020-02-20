@@ -29,6 +29,8 @@ public class CenterPanel extends JPanel {
     private String name;
     private OrderOperateService orderOperateService;
     private MainFrame mainFrame;
+    public JButton state1_btn;
+    public JButton state2_btn;
 
     public CenterPanel(PackMachine pack_machine, Double sizecoeH, Double sizecoeW, int line_No, AssignOrderTable assignOrderTable, MainFrame mainFrame,OrderOperateService orderOperateService) {
         this.pack_machine = pack_machine;
@@ -90,14 +92,22 @@ public class CenterPanel extends JPanel {
         COM_F.setFont(font18);
         COM_F.setBounds((int) round(310 * sizecoeW), (int) round(5 * sizecoeH), (int) round(60 * sizecoeW), (int) round(30 * sizecoeH));
 
-        JButton state1_btn = new JButton();
-        state1_btn.setBackground(Color.gray);
+        state1_btn = new JButton();
+
         state1_btn.setBounds((int) round(390 * sizecoeW), (int) round(8 * sizecoeH), (int) round(24 * sizecoeW), (int) round(24 * sizecoeH));
 
-        JButton state2_btn = new JButton();
-        state2_btn.setBackground(Color.gray);
+        state2_btn = new JButton();
+
         state2_btn.setBounds((int) round(430 * sizecoeW), (int) round(8 * sizecoeH), (int) round(24 * sizecoeW), (int) round(24 * sizecoeH));
 
+
+        if(pack_machine.isDevicdConnect()){
+            state1_btn.setBackground(Color.green);
+            state2_btn.setBackground(Color.green);
+        }else {
+            state1_btn.setBackground(Color.red);
+            state2_btn.setBackground(Color.red);
+        }
         firstP_p2.add(typeName_L);
         firstP_p2.add(typeName_F);
         firstP_p2.add(COM_F);
@@ -177,23 +187,23 @@ public class CenterPanel extends JPanel {
         code_con_F = new JTextField();
         code_con_F.setFont(font14);
         code_con_F.setBounds((int) round(100 * sizecoeW), (int) round(115 * sizecoeH), (int) round(240 * sizecoeW), (int) round(30 * sizecoeH));
-        JButton suspend_btn = new JButton("暂停装车");
-        suspend_btn.setFont(font14);
-        suspend_btn.setBounds((int) round(380 * sizecoeW), (int) round(115 * sizecoeH), (int) round(100 * sizecoeW), (int) round(30 * sizecoeH));
-        suspend_btn.setBorder(raisedBevelBorder);
-        suspend_btn.setBackground(new Color(238, 238, 238));
+//        JButton suspend_btn = new JButton("暂停装车");
+//        suspend_btn.setFont(font14);
+//        suspend_btn.setBounds((int) round(380 * sizecoeW), (int) round(115 * sizecoeH), (int) round(100 * sizecoeW), (int) round(30 * sizecoeH));
+//        suspend_btn.setBorder(raisedBevelBorder);
+//        suspend_btn.setBackground(new Color(238, 238, 238));
 
         firstP_p3.add(code_con);
         firstP_p3.add(code_con_F);
-        firstP_p3.add(suspend_btn);
+//        firstP_p3.add(suspend_btn);
 
         /*------------暂停装车按钮功能-----------*/
-        suspend_btn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        });
+//        suspend_btn.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//
+//            }
+//        });
 
         textFieldsArray = new JTextField[]{typeName_F, COM_F, car_No_F, pre_load_F, car_lane_F, cement_type_F, deliver_No_F, code_con_F, real_load_F};
         for (JTextField textFields : textFieldsArray) {
@@ -455,6 +465,7 @@ public class CenterPanel extends JPanel {
             Order order = ssigned_queue.get(i);
             assignOrderTable.defaultModel.insertRow(i, new Object[]{order.getVehicleno(), order.getCarLaneIndex() == 0 ? "null" : order.getCarLaneIndex()+"", order.getMaterial(),  Integer.valueOf(order.getTotal_amount()).toString(), Integer.valueOf(order.getAlready_amount()).toString(), order.getConsumer_code(), order.getBatch_no(), order.getBatch_no(),order.getPk_delivery()});
         }
+
     }
 
     public ButtonGroup getClassSelect() {
@@ -492,6 +503,7 @@ public class CenterPanel extends JPanel {
     }
 
     public void flushPackMahineExecuteOrder() {
+
         Order order=null;
         if(pack_machine.getCurrentExecuteOrder()!=null){
             order=pack_machine.getCurrentExecuteOrder();
@@ -523,6 +535,14 @@ public class CenterPanel extends JPanel {
             //code
             textFieldsArray[7].setText(order.getConsumer_code() + order.getCreate_time_form_mmdd() + order.getClass_no() + order.getProductLineIndex() + order.getBatch_no());
             textFieldsArray[8].setText(Integer.valueOf(order.getAlready_amount()).toString());
+        }
+
+        if(pack_machine.isDevicdConnect()){
+            state1_btn.setBackground(Color.green);
+            state2_btn.setBackground(Color.green);
+        }else {
+            state1_btn.setBackground(Color.red);
+            state2_btn.setBackground(Color.red);
         }
 
     }

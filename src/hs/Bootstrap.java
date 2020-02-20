@@ -6,6 +6,7 @@ import hs.dao.Packer;
 import hs.modle.PackMAchineGroup;
 import hs.modle.PackerConfigure;
 import hs.service.OrderOperateService;
+import hs.service.connect.DeviceConnect;
 import hs.view.MainFrame;
 import org.apache.ibatis.type.EnumOrdinalTypeHandler;
 import org.springframework.context.ApplicationContext;
@@ -24,9 +25,15 @@ import java.util.concurrent.Executors;
 public class Bootstrap {
     public static void main(String[] args) {
         ApplicationContext cxt=new AnnotationConfigApplicationContext(SpringAnnotionConfigure.class);;
-        OrderOperateService orderOperateService=cxt.getBean(OrderOperateService.class);
+        Packer packer=cxt.getBean(Packer.class);
         MainFrame mainFrame =cxt.getBean(MainFrame.class);
-        mainFrame.setTitle("超峰包装发货系统");
+        for(PackerConfigure packerConfigure:packer.getPackerConfigure().values()){
+            mainFrame.setTitle(packerConfigure.getCompanyName()+"包装发货系统");
+        }
+
+        DeviceConnect connect= cxt.getBean(DeviceConnect.class);
+        new Thread(connect).start();
+
         mainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         mainFrame.setVisible(true);
         mainFrame.setResizable(false);
@@ -34,12 +41,10 @@ public class Bootstrap {
             public void windowClosing(WindowEvent e) {
                 int i = JOptionPane.showConfirmDialog(null, "确定要退出系统吗？", "退出系统", JOptionPane.YES_NO_OPTION);
                 if (i == JOptionPane.YES_OPTION) {
+                    ((AnnotationConfigApplicationContext) cxt).close();
                     System.exit(0);
                 }
             }
         });
-
-        System.out.println(1);
-        while (true);
     }
 }

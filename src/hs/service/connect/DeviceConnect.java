@@ -57,8 +57,6 @@ public class DeviceConnect implements Runnable{
         logger.warn("destroy server resources");
         bossGroup.shutdownGracefully();
         workerGroup.shutdownGracefully();
-//        bossGroup = null;
-//        workerGroup = null;
     }
 
 }

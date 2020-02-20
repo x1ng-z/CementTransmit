@@ -1,6 +1,7 @@
 package hs.service;
 
 import hs.modle.Location;
+import hs.modle.Message;
 import hs.modle.order.Order;
 import hs.modle.PackMAchineGroup;
 import hs.modle.UnassignOrderList;
@@ -18,6 +19,17 @@ public class OrderOperateService {
     private UnassignOrderList unassignOrderList;
     @Autowired
     private PackMAchineGroup packMAchineGroup;
+
+    private SessionManager sessionManager;
+
+    public SessionManager getSessionManager() {
+        return sessionManager;
+    }
+    @Autowired
+    public void setSessionManager(SessionManager sessionManager) {
+        this.sessionManager = sessionManager;
+    }
+
     /**
      *订单分配,订单从未分配列表分配至某一个包装机的车道
      * @param order 订单，主要
@@ -49,12 +61,21 @@ public class OrderOperateService {
         Order order=packMAchineGroup.unassignSolver(location,index);
         //TODO 查询否为车道的第一张订单,如果是第一张订单需要停止包装机
         unassignOrderList.addUnsignOrder(order);
+
+
+
     }
 
 
     public void modifyOrderInPackList(Location location,int index,Order order){
         //TODO 修改后的订单如果订单总数小于已装数量，则拒绝修改
         packMAchineGroup.modifySolver(location,index,order);
+        Message message=new Message();
+        message.setSendTo( packMAchineGroup.getProductLineMaps().get(location.getProductionLine()).getDeviceMaps().get(location.getPackmachineIndex()).getPackerConfigure().getDeviceIp());
+
+        message.setContext(Command.SEND_PAUSE.build(packMAchineGroup.getProductLineMaps().get(location.getProductionLine()).getDeviceMaps().get(location.getPackmachineIndex()).getAllSortOrder().get(index)));
+
+        sessionManager.getMessageBus().putMessage(message);
     }
 
     public void delectOrderInPackList(Location location,int index){

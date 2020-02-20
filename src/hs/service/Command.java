@@ -22,7 +22,7 @@ public enum Command{
         }
         @Override
         public byte[] build(Object object) {
-            return build0(object);
+            return super.build0(object);
         }
     },
     SEND_REPLENISH("12","01","01"){
@@ -34,7 +34,7 @@ public enum Command{
 
         @Override
         public byte[] build(Object object){
-            return build0(object);
+            return super.build0(object);
         }
     },
 
@@ -48,7 +48,7 @@ public enum Command{
 
         @Override
         public byte[] build(Object object) {
-            return build0(object);
+            return super.build0(object);
         }
     },
 
@@ -152,7 +152,7 @@ public enum Command{
     abstract public String analye(String context);
 
 
-    public String analye0(String context){
+    private String analye0(String context){
 
         System.out.println(context.substring(8,10));
         String findcard=context.substring(10);
@@ -176,7 +176,7 @@ public enum Command{
      * */
     abstract public byte[] build(Object object);
 
-    public byte[] build0(Object object){
+    private byte[] build0(Object object){
         if(object instanceof PackManulOrder){
             PackManulOrder orderinfo=(PackManulOrder) object;
             java.util.List<Byte> tmp_buf=new ArrayList<Byte>();
@@ -244,7 +244,7 @@ public enum Command{
             /**
              * pre_load
              * */
-            tmp_buf.addAll(CodeHelper.StringConvertToASCII(Integer.valueOf(Double.valueOf(orderinfo.getPro_weight()).intValue()).toString(), 5));
+            tmp_buf.addAll(CodeHelper.StringConvertToASCII(Integer.valueOf(Double.valueOf(orderinfo.getTotal_amount()).intValue()).toString(), 5));
             /**
              * code
              * */
@@ -270,7 +270,6 @@ public enum Command{
             tmp_buf.addAll(CodeHelper.StringConvertToASCII("0",2));
             /**
              *end[0] 主机标识符
-             *
              * */
             tmp_buf.add(Byte.parseByte("01",16));
             tmp_buf.add(Byte.parseByte("5a",16));

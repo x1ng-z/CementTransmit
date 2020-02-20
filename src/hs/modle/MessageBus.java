@@ -1,7 +1,9 @@
 package hs.modle;
 
 
+import hs.service.SessionManager;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.LinkedBlockingQueue;
@@ -15,36 +17,14 @@ import java.util.concurrent.LinkedBlockingQueue;
 @Component("messageBus")
 public class MessageBus {
     public static Logger logger = Logger.getLogger(MessageBus.class);
-    final LinkedBlockingQueue<Message> messagequeue=new LinkedBlockingQueue();
+    final private LinkedBlockingQueue<Message> messagequeue=new LinkedBlockingQueue();
 
-    Message getMessage() throws Exception{
+    public Message getMessage() throws Exception{
         return messagequeue.take();
     }
 
-    void putMessage(Message message){
+    public void putMessage(Message message){
         messagequeue.offer(message);
     }
 
-    void selfinit(){
-        Thread queueThread=new Thread(new Runnable() {
-            @Override
-            public void run() {
-                System.out.println("Message bus service setup");
-                while (!Thread.currentThread().isInterrupted()){
-                    try {
-                        Message message=messagequeue.take();
-                        System.out.println("Send To: "+message.getSendTo());
-                        for(int i=0;i<message.getContext().length;++i) {
-                            System.out.println("message context: ["+i+"] "+Integer.toString(message.getContext()[i]&0xff,16));
-                        }
-                    } catch (InterruptedException e) {
-                        logger.error(e);
-                    }
-                }
-
-            }
-        });
-        queueThread.setDaemon(true);
-        queueThread.start();
-    }
 }
