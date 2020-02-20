@@ -181,22 +181,22 @@ public class MainFrame extends JFrame {
         topPanel.add(ouputLabel);
 
         JPanel modelPanel = new JPanel();
-        modelPanel.setBounds((int) round(15 * sizecoeW), (int) round(4 * sizecoeH), (int) round(200 * sizecoeW), (int) round(52 * sizecoeH));
+        modelPanel.setBounds((int) round(15 * sizecoeW), (int) round(4 * sizecoeH), (int) round(240 * sizecoeW), (int) round(52 * sizecoeH));
         modelPanel.setBorder(etchedBorderL);
         modelPanel.setLayout(null);
         topPanel.add(modelPanel);
 
         JLabel model_select = new JLabel("模式选择");
         model_select.setFont(font16);
-        model_select.setBounds((int) round(5 * sizecoeW), (int) round(5 * sizecoeH), (int) round(80 * sizecoeW), (int) round(40 * sizecoeH));
+        model_select.setBounds((int) round(5 * sizecoeW), (int) round(5 * sizecoeH), (int) round(100 * sizecoeW), (int) round(40 * sizecoeH));
 
         JRadioButton radioBtn1 = new JRadioButton("一卡通模式");
-        radioBtn1.setBounds((int) round(80 * sizecoeW), (int) round(2 * sizecoeH), (int) round(100 * sizecoeW), (int) round(25 * sizecoeH));
+        radioBtn1.setBounds((int) round(100 * sizecoeW), (int) round(2 * sizecoeH), (int) round(130 * sizecoeW), (int) round(25 * sizecoeH));
         radioBtn1.setActionCommand("一卡通模式");
         JRadioButton radioBtn2 = new JRadioButton("手动模式");
         radioBtn2.setSelected(true);
         radioBtn2.setActionCommand("手动模式");
-        radioBtn2.setBounds((int) round(80 * sizecoeW), (int) round(25 * sizecoeH), (int) round(100 * sizecoeW), (int) round(25 * sizecoeH));
+        radioBtn2.setBounds((int) round(100 * sizecoeW), (int) round(25 * sizecoeH), (int) round(130 * sizecoeW), (int) round(25 * sizecoeH));
 
         ButtonGroup radioBtn_group = new ButtonGroup();
         radioBtn_group.add(radioBtn1);
@@ -209,8 +209,15 @@ public class MainFrame extends JFrame {
         modelPanel.add(radioBtn1);
         modelPanel.add(radioBtn2);
 
+        String[] proline_list = new String[]{
+                "一线","二线", "三线"};
+        JComboBox<String> proline_box = new JComboBox<String>(proline_list);
+        proline_box.setFont(font14);
+        proline_box.setBounds((int) round(260 * sizecoeW), (int) round(4 * sizecoeH), (int) round(130 * sizecoeW), (int) round(30 * sizecoeH));
+        topPanel.add(proline_box);
+
         currentTimeLabel = new CurrentTimeLabel();
-        currentTimeLabel.setBounds((int) round(1300 * sizecoeW), (int) round(8 * sizecoeH), (int) round(250 * sizecoeW), (int) round(40 * sizecoeH));
+        currentTimeLabel.setBounds((int) round(1260 * sizecoeW), (int) round(8 * sizecoeH), (int) round(290 * sizecoeW), (int) round(40 * sizecoeH));
         currentTimeLabel.setOpaque(true);
         currentTimeLabel.setBackground(Color.black);
         topPanel.add(currentTimeLabel);
