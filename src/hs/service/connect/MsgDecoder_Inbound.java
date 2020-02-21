@@ -1,5 +1,7 @@
 package hs.service.connect;
 
+import hs.modle.CarLane;
+import hs.modle.PackMachine;
 import hs.service.Command;
 import hs.service.SessionManager;
 import io.netty.buffer.ByteBuf;
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.net.InetSocketAddress;
+import java.util.Map;
 
 @ChannelHandler.Sharable
 @Component
@@ -61,8 +64,11 @@ public class MsgDecoder_Inbound extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        InetSocketAddress ipSocket = (InetSocketAddress) ctx.channel().remoteAddress();
+        String clientIp = ipSocket.getAddress().getHostAddress();
         ByteBuf wait_for_read = (ByteBuf) msg;
         String getinfo=null;
+        Map<String,String> results=null;
         getinfo = ByteBufUtil.hexDump(wait_for_read.readBytes(wait_for_read.readableBytes()));
         switch (getinfo.substring(8,10)){
             case "06":
@@ -72,11 +78,23 @@ public class MsgDecoder_Inbound extends ChannelInboundHandlerAdapter {
                 Command.RECEIVE_KEYSURE.analye(getinfo);
                 break;
             case "04":
-                Command.RECEIVE_WEIGHT.analye(getinfo);
+                results=Command.RECEIVE_WEIGHT.analye(getinfo);
                 //TODO sessionManager设置当前包装机的正在进行订单
+                if(results!=null){
+                    PackMachine packMachine=sessionManager.getPackMachineMapByIp().get(clientIp);
+                    for(CarLane carLane:packMachine.getPackerConfigure().getCarLanes()){
+                        if(carLane.getHardCode().equals(results.get("laneHardCode"))){
+                            if(carLane.getWaitExecuteOfOrders().size()!=0){
+                                carLane.getWaitExecuteOfOrders().get(0).setAlready_amount(Integer.valueOf(results.get("alreadLoad").trim()));
+                                packMachine.setCurrentExecuteOrder(carLane.getWaitExecuteOfOrders().get(0));
+                            }
+                        }
+                    }
+
+                }
                 break;
             case "08":
-                Command.RECEIVE_ACKNOWLEDGE.analye(getinfo);
+                results=Command.RECEIVE_ACKNOWLEDGE.analye(getinfo);
                 break;
             case "15":
                 Command.RECEIVE_HEARTBEAT.analye(getinfo);

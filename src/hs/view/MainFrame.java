@@ -212,6 +212,8 @@ public class MainFrame extends JFrame {
                     logger.info("选中: " + proline_box.getSelectedIndex() + " = " + proline_box.getSelectedItem());
                     gproductline=proline_box.getSelectedIndex()+1;
                     build();
+                    flushAssignOrderTable();
+                    flushUnasignOrder();
                 }
             }
         });

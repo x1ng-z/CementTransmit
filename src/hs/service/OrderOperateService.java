@@ -58,9 +58,19 @@ public class OrderOperateService {
      * */
 
     public void unassignOrderInPackList(Location location,int index){
+        //查询否为车道的第一张订单,如果是第一张订单需要停止包装机
+        boolean isneed=packMAchineGroup.getProductLineMaps().get(location.getProductionLine()).getDeviceMaps().get(location.getPackmachineIndex()).isFristOrderInCarLane(index);
+
         Order order=packMAchineGroup.unassignSolver(location,index);
-        //TODO 查询否为车道的第一张订单,如果是第一张订单需要停止包装机
+
         unassignOrderList.addUnsignOrder(order);
+
+        if(isneed&&(order!=null)){
+            Message message=new Message();
+            message.setContext(Command.SEND_PAUSE.build(order));
+            message.setSendTo(packMAchineGroup.getProductLineMaps().get(location.getProductionLine()).getDeviceMaps().get(location.getPackmachineIndex()).getPackerConfigure().getDeviceIp());
+            sessionManager.getMessageBus().putMessage(message);
+        }
 
 
 
@@ -69,17 +79,29 @@ public class OrderOperateService {
 
     public void modifyOrderInPackList(Location location,int index,Order order){
         //TODO 修改后的订单如果订单总数小于已装数量，则拒绝修改
+        boolean isneed=packMAchineGroup.getProductLineMaps().get(location.getProductionLine()).getDeviceMaps().get(location.getPackmachineIndex()).isFristOrderInCarLane(index);
+
         packMAchineGroup.modifySolver(location,index,order);
-        Message message=new Message();
-        message.setSendTo( packMAchineGroup.getProductLineMaps().get(location.getProductionLine()).getDeviceMaps().get(location.getPackmachineIndex()).getPackerConfigure().getDeviceIp());
-
-        message.setContext(Command.SEND_PAUSE.build(packMAchineGroup.getProductLineMaps().get(location.getProductionLine()).getDeviceMaps().get(location.getPackmachineIndex()).getAllSortOrder().get(index)));
-
-        sessionManager.getMessageBus().putMessage(message);
+        if(isneed){
+            Message message=new Message();
+            message.setSendTo( packMAchineGroup.getProductLineMaps().get(location.getProductionLine()).getDeviceMaps().get(location.getPackmachineIndex()).getPackerConfigure().getDeviceIp());
+            message.setContext(Command.SEND_REPLENISH.build(packMAchineGroup.getProductLineMaps().get(location.getProductionLine()).getDeviceMaps().get(location.getPackmachineIndex()).getAllSortOrder().get(index)));
+            sessionManager.getMessageBus().putMessage(message);
+        }
     }
 
     public void delectOrderInPackList(Location location,int index){
-        packMAchineGroup.deleteSolver(location,index);
+        //查询否为车道的第一张订单,如果是第一张订单需要停止包装机
+        boolean isneed=packMAchineGroup.getProductLineMaps().get(location.getProductionLine()).getDeviceMaps().get(location.getPackmachineIndex()).isFristOrderInCarLane(index);
+
+        Order order=packMAchineGroup.deleteSolver(location,index);
+
+        if(isneed&&(order!=null)){
+            Message message=new Message();
+            message.setContext(Command.SEND_PAUSE.build(order));
+            message.setSendTo(packMAchineGroup.getProductLineMaps().get(location.getProductionLine()).getDeviceMaps().get(location.getPackmachineIndex()).getPackerConfigure().getDeviceIp());
+            sessionManager.getMessageBus().putMessage(message);
+        }
     }
 
 

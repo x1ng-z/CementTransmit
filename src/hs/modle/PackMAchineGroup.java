@@ -61,7 +61,7 @@ public class PackMAchineGroup {
         return productLineMaps.get(location.getProductionLine()).deviceMaps.get(location.getPackmachineIndex()).modifyOrder(location.getCarLaneIndex(),index,newOrder);
     }
 
-    public boolean deleteSolver(Location location,int index){
+    public Order deleteSolver(Location location,int index){
         return productLineMaps.get(location.getProductionLine()).deviceMaps.get(location.getPackmachineIndex()).deleteOrder(location.getCarLaneIndex(),index);
     }
 

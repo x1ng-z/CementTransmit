@@ -4,6 +4,8 @@ import hs.modle.order.PackManulOrder;
 import hs.utils.CodeHelper;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,7 +18,7 @@ public enum Command{
 
     SEND_ORDER("12","00","01"){
         @Override
-        public String analye(String context) {
+        public Map<String,String> analye(String context) {
             logger.error(name()+" command no spport");
             throw new UnsupportedOperationException(name()+" command no spport");
         }
@@ -27,7 +29,7 @@ public enum Command{
     },
     SEND_REPLENISH("12","01","01"){
         @Override
-        public  String analye(String context){
+        public  Map<String,String> analye(String context){
             logger.error(name()+" command no spport");
             throw new UnsupportedOperationException(name()+" command no spport");
         }
@@ -40,7 +42,7 @@ public enum Command{
 
     SEND_PAUSE("12","00","02"){
         @Override
-        public String analye(String context) {
+        public Map<String,String> analye(String context) {
             logger.error(name()+" command no spport");
             throw new UnsupportedOperationException(name()+" command no spport");
 
@@ -54,7 +56,7 @@ public enum Command{
 
     RECEIVE_KEYSURE("07",null,null){
         @Override
-        public String analye(String context) {
+        public Map<String,String> analye(String context) {
             return null;
         }
 
@@ -67,72 +69,87 @@ public enum Command{
 
     RECEIVE_WEIGHT("04",null,null){
         @Override
-        public String analye(String context) {
-            return null;
+        public Map<String,String> analye(String context) {
+            logger.info(context);
+            Matcher matcher1 = Pattern.compile("(.*a5(.*)015a$)").matcher(context);
+            if(matcher1.find()){
+                Map<String,String> result=new HashMap<>();
+                result.put("laneHardCode",context.substring(10,12));
+                result.put("alreadLoad",CodeHelper.ASCIIToConvertString(context.substring(16,24)));
+                return result;
+            }else {
+                return null;
+            }
         }
 
         @Override
         public byte[] build(Object object) {
-            return new byte[0];
+            logger.error(name()+" command no spport");
+            throw new UnsupportedOperationException(name()+" command no spport");
         }
     },
 
     RECEIVE_COMPLE("06",null,null){
         @Override
-        public String analye(String context) {
+        public Map<String,String> analye(String context) {
             return null;
         }
 
         @Override
         public byte[] build(Object object) {
-            return new byte[0];
+            logger.error(name()+" command no spport");
+            throw new UnsupportedOperationException(name()+" command no spport");
         }
     },
 
     RECEIVE_ACKNOWLEDGE("08",null,null){
         @Override
-        public String analye(String context) {
+        public Map<String,String> analye(String context) {
             return null;
         }
 
         @Override
         public byte[] build(Object object) {
-            return new byte[0];
+            logger.error(name()+" command no spport");
+            throw new UnsupportedOperationException(name()+" command no spport");
         }
     },
 
     RECEIVE_NOORDER("09",null,null){
         @Override
-        public String analye(String context) {
+        public Map<String,String> analye(String context) {
             return null;
         }
 
         @Override
         public byte[] build(Object object) {
-            return new byte[0];
+            logger.error(name()+" command no spport");
+            throw new UnsupportedOperationException(name()+" command no spport");
         }
     },
 
     RECEIVE_HEARTBEAT("15",null,null){
         @Override
-        public String analye(String context) {
+        public Map<String,String> analye(String context) {
             return null;
         }
 
         @Override
         public byte[] build(Object object) {
-            return new byte[0];
+            logger.error(name()+" command no spport");
+            throw new UnsupportedOperationException(name()+" command no spport");
         }
     },
     RECEIVE_RADIATIONWEIGHT("41",null,null){
         @Override
-        public String analye(String context) {
+        public Map<String,String> analye(String context) {
             return null;
         }
 
         @Override
         public byte[] build(Object object) {
-            return new byte[0];
+            logger.error(name()+" command no spport");
+            throw new UnsupportedOperationException(name()+" command no spport");
         }
     };
 
@@ -149,7 +166,7 @@ public enum Command{
      * @param context msg
      * @return cardno
      * */
-    abstract public String analye(String context);
+    abstract public java.util.Map<String,String> analye(String context);
 
 
     private String analye0(String context){
@@ -157,7 +174,7 @@ public enum Command{
         System.out.println(context.substring(8,10));
         String findcard=context.substring(10);
         System.out.println(findcard);
-        Matcher matcher1 = Pattern.compile("(^a5(.*)5a$)").matcher(findcard);
+        Matcher matcher1 = Pattern.compile("(.*a5(.*)5a$)").matcher(findcard);
         if(matcher1.find()){
             String primercard=(matcher1.group().substring(8,16));
             StringBuilder cardbuild=new StringBuilder();
@@ -248,7 +265,7 @@ public enum Command{
             /**
              * code
              * */
-            String code=orderinfo.getConsumer_code() + orderinfo.getCreate_time_form_mmdd() + orderinfo.getClass_no() + orderinfo.getProductLineIndex() + orderinfo.getBatch_no();
+            String code=orderinfo.getConsumer_code() + orderinfo.getCreate_time_form_mmdd() + "0"+orderinfo.getClass_no() + orderinfo.getProductLineIndex() + orderinfo.getBatch_no();
             tmp_buf.addAll(CodeHelper.StringConvertToASCII(code,30));
 
             /**
@@ -263,13 +280,17 @@ public enum Command{
             /**
              * reserved
              * */
-            tmp_buf.addAll(CodeHelper.StringConvertToASCII("0",11));
+            for(int i=0;i<11;i++){
+                tmp_buf.add(Byte.parseByte("0",16));
+            }
             /**
              *crc
              * */
-            tmp_buf.addAll(CodeHelper.StringConvertToASCII("0",2));
+            for(int i=0;i<2;i++){
+                tmp_buf.add(Byte.parseByte("0",16));
+            }
             /**
-             *end[0] 主机标识符
+             *end[0] 主机标识符 00厂区收发或系统，01本软件
              * */
             tmp_buf.add(Byte.parseByte("01",16));
             tmp_buf.add(Byte.parseByte("5a",16));

@@ -533,7 +533,7 @@ public class CenterPanel extends JPanel {
             textFieldsArray[5].setText(order.getMaterial());
             textFieldsArray[6].setText(order.getBillcode());
             //code
-            textFieldsArray[7].setText(order.getConsumer_code() + order.getCreate_time_form_mmdd() + order.getClass_no() + order.getProductLineIndex() + order.getBatch_no());
+            textFieldsArray[7].setText(order.getConsumer_code() + order.getCreate_time_form_mmdd() + "0"+order.getClass_no() + order.getProductLineIndex() + order.getBatch_no());
             textFieldsArray[8].setText(Integer.valueOf(order.getAlready_amount()).toString());
         }
 

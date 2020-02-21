@@ -71,13 +71,12 @@ public class CarLane {
         return true;
     }
 
-    boolean deleteOrderByIndex(Order oldorder){
+    Order deleteOrderByIndex(Order oldorder){
         int index=waitExecuteOfOrders.indexOf(oldorder);
         if(index<0){
-            return false;
+            return null;
         }
-        waitExecuteOfOrders.remove(index);
-        return true;
+        return waitExecuteOfOrders.remove(index);
     }
 
 

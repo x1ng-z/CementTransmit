@@ -30,6 +30,9 @@ public class PackMachine implements Runnable {
     private LanePipe lanePipe;
     private PackerConfigure packerConfigure;
     private DefaultLaneContext currentLaneContext = null;
+
+
+
     private Order currentExecuteOrder = null;
 
     private Executor executor;
@@ -149,14 +152,25 @@ public class PackMachine implements Runnable {
     }
 
 
-    public boolean deleteOrder(int laneorder, int index) {
+    public Order deleteOrder(int laneorder, int index) {
         DefaultLaneContext checkctx = lanePipe.head.next;
         while (checkctx != lanePipe.tail) {
             if (checkctx.getLane().getLaneIndex() == (laneorder)) {
-                checkctx.getLane().deleteOrderByIndex(getAllSortOrder().get(index));
-                return true;
+                return checkctx.getLane().deleteOrderByIndex(getAllSortOrder().get(index));
             }
             checkctx = checkctx.next;
+        }
+        return null;
+    }
+
+    public boolean isFristOrderInCarLane(int index){
+        ;
+        for(CarLane carLane:getPackerConfigure().carLanes){
+            if(carLane.getWaitExecuteOfOrders().size()!=0){
+                if(carLane.getWaitExecuteOfOrders().get(0).equals(getAllSortOrder().get(index))){
+                    return true;
+                }
+            }
         }
         return false;
     }
@@ -165,7 +179,9 @@ public class PackMachine implements Runnable {
         DefaultLaneContext checkctx = lanePipe.head.next;
         while (checkctx != lanePipe.tail) {
             if (checkctx.getLane().getLaneIndex() == (laneorder)) {
+                currentExecuteOrder=null;
                 return checkctx.getLane().canncelAssignOrderByIndex(getAllSortOrder().get(index));
+
             }
             checkctx = checkctx.next;
         }
@@ -269,6 +285,9 @@ public class PackMachine implements Runnable {
 
     public boolean isDevicdConnect() {
         return isDevicdConnect;
+    }
+    public void setCurrentExecuteOrder(Order currentExecuteOrder) {
+        this.currentExecuteOrder = currentExecuteOrder;
     }
 
     public void setDevicdConnect(boolean devicdConnect) {
