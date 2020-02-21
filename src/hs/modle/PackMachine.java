@@ -70,12 +70,13 @@ public class PackMachine implements Runnable {
                 if(maxCountOneLane<carLaneSortByFirstOrder[j].getWaitExecuteOfOrders().size()){
                     maxCountOneLane=carLaneSortByFirstOrder[j].getWaitExecuteOfOrders().size();
                 }
+                j++;
                 //加入的车道数量是否大于2
                 if(j>=2){
                     //判断当前车道的第一个订单常见时间是否小于
-                    int lanecount=j;
+                    int lanecount=j-1;
                     while(lanecount>0){
-                        if(carLaneSortByFirstOrder[lanecount].getWaitExecuteOfOrders().get(0).getCreate_time().isBefore(carLaneSortByFirstOrder[lanecount-1].getWaitExecuteOfOrders().get(0).getCreate_time())){
+                        if(carLaneSortByFirstOrder[lanecount].getWaitExecuteOfOrders().get(0).getAssign_time().isBefore(carLaneSortByFirstOrder[lanecount-1].getWaitExecuteOfOrders().get(0).getAssign_time())){
                             CarLane exchange;
                             exchange =carLaneSortByFirstOrder[lanecount];
                             carLaneSortByFirstOrder[lanecount]=carLaneSortByFirstOrder[lanecount-1];
@@ -87,7 +88,7 @@ public class PackMachine implements Runnable {
                     }
 
                 }
-                j++;
+
             }
 
         }
@@ -156,7 +157,12 @@ public class PackMachine implements Runnable {
         DefaultLaneContext checkctx = lanePipe.head.next;
         while (checkctx != lanePipe.tail) {
             if (checkctx.getLane().getLaneIndex() == (laneorder)) {
-                return checkctx.getLane().deleteOrderByIndex(getAllSortOrder().get(index));
+                //移除的订单和当前订单相同需要重置前订单
+                Order whichorder=getAllSortOrder().get(index);
+                if(whichorder.equals(currentLaneContext)){
+                    currentExecuteOrder=null;
+                }
+                return checkctx.getLane().deleteOrderByIndex(whichorder);
             }
             checkctx = checkctx.next;
         }
@@ -176,12 +182,16 @@ public class PackMachine implements Runnable {
     }
 
     public Order cancelAssignOrder(int laneorder, int index) {
+
         DefaultLaneContext checkctx = lanePipe.head.next;
         while (checkctx != lanePipe.tail) {
             if (checkctx.getLane().getLaneIndex() == (laneorder)) {
-                currentExecuteOrder=null;
-                return checkctx.getLane().canncelAssignOrderByIndex(getAllSortOrder().get(index));
-
+                //移除的订单和当前订单相同需要重置前订单
+                Order whichorder=getAllSortOrder().get(index);
+                if(whichorder.equals(currentLaneContext)){
+                    currentExecuteOrder=null;
+                }
+                return checkctx.getLane().canncelAssignOrderByIndex(whichorder);
             }
             checkctx = checkctx.next;
         }
