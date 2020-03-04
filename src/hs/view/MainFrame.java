@@ -2,6 +2,7 @@ package hs.view;
 
 
 import hs.modle.CarLane;
+import hs.modle.MaterialName;
 import hs.modle.PackMAchineGroup;
 import hs.modle.PackMachine;
 import hs.modle.order.Order;
@@ -18,6 +19,7 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
@@ -455,9 +457,12 @@ public class MainFrame extends JFrame {
         cement_type.setBounds((int) round(20 * sizecoeW), (int) round(130 * sizecoeH), (int) round(80 * sizecoeW), (int) round(30 * sizecoeH));
         bottom_rightP.add(cement_type);
 
-        String[] cement_list = new String[]{
-                " ","超丰P.O42.5包装", "超丰P.O42.5纸袋", "虎丰P.O42.5包装", "之江P.O42.5包装",
-                "超丰P.C32.5R包装", "超丰P.C32.5R纸袋", "虎丰P.C32.5R包装", "之江P.C32.5R包装","虎丰M32.5包装"};
+        List<MaterialName> materialNames=orderOperateService.getAllMaterialNames();
+        String[] cement_list = materialNames.size()==0?null:new String[materialNames.size()];
+
+        for(int i=0;i<materialNames.size();++i){
+            cement_list[i]=materialNames.get(i).getMaterialName();
+        }
         JComboBox<String> cement_type_box = new JComboBox<String>(cement_list);
         cement_type_box.setFont(font14);
         cement_type_box.setBounds((int) round(110 * sizecoeW), (int) round(130 * sizecoeH), (int) round(180 * sizecoeW), (int) round(30 * sizecoeH));
@@ -541,6 +546,7 @@ public class MainFrame extends JFrame {
                     order.setLaneno_alias(null);
                     order.setCreate_time(Instant.now());
                     order.setPk_delivery(CodeHelper.getUUID());
+                    order.setPro_weight(Double.parseDouble(pre_load_text));
 
                     orderOperateService.addOrderToUnassignList(order);
                     MainFrame.this.flushAssignOrderTable();

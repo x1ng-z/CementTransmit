@@ -1,6 +1,8 @@
 package hs.view;
 
 
+import hs.modle.MaterialName;
+import hs.modle.order.Order;
 import hs.service.OrderOperateService;
 import org.apache.log4j.Logger;
 
@@ -13,10 +15,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 import static java.lang.Math.round;
 
@@ -54,29 +59,29 @@ public class HistoryFrame extends JFrame {
         line_No.setFont(font18);
         top_p1.add(line_No);
 
-        String[] line_list = new String[]{"","一线","二线"};
-
+        Set<Integer> plIndexs=orderOperateService.getPackMAchineGroup().getProductLineMaps().keySet();
+        String[] line_list =plIndexs.size()==0?null:new String[plIndexs.size()];
+        int pliterm=0;
+        for(Integer plindex:plIndexs){
+            line_list[pliterm++]=plindex.toString();
+        }
         JComboBox<String> line_No_box = new JComboBox<String>(line_list);
         line_No_box.setBounds((int) round(140 * sizecoeW), (int) round(10 * sizecoeH), (int) round(150 * sizecoeW), (int) round(35 * sizecoeH));
         line_No_box.setFont(font14);
         top_p1.add(line_No_box);
 
         /**包装机选择*/
+        Set<Integer> allpackindex=orderOperateService.getAllPackmachineOrder();
+        String[] tmp_packname= allpackindex.size()==0?null:new String[allpackindex.size()];
+        int iterpack=0;
+        for(Integer packIndex:allpackindex){
+            tmp_packname[iterpack++]=packIndex.toString();
+        }
         JCheckBox bag_No = new JCheckBox("包机号：");
         bag_No.setBounds((int) round(320 * sizecoeW), (int) round(5 * sizecoeH), (int) round(120 * sizecoeW), (int) round(40 * sizecoeH));
         bag_No.setFont(font18);
         top_p1.add(bag_No);
-        java.util.List<String> tmp_packname=new ArrayList();
-        tmp_packname.add("");
-        //TODO
-//        for(Pack_Machine pack_machine:Machine_Manger.getInstance().getPack_machines().values()){
-//            tmp_packname.add(pack_machine.getPackage_machine_name());
-//        }
-
-        String[] bag_list=new String[0];
-        bag_list=tmp_packname.toArray(bag_list);
-
-        JComboBox<String> bag_No_box = new JComboBox<String>(bag_list);
+        JComboBox<String> bag_No_box = new JComboBox<String>(tmp_packname);
         bag_No_box.setBounds((int) round(440 * sizecoeW), (int) round(10 * sizecoeH), (int) round(150 * sizecoeW), (int) round(35 * sizecoeH));
         bag_No_box.setFont(font14);
         top_p1.add(bag_No_box);
@@ -111,9 +116,13 @@ public class HistoryFrame extends JFrame {
         top_p2.add(cement_Type);
 
         /**品种选择*/
-        String[] cement_list = new String[]{
-                "","超丰P.O42.5包装", "超丰P.O42.5纸袋", "虎丰P.O42.5包装", "之江P.O42.5包装",
-                "超丰P.C32.5R包装", "超丰P.C32.5R纸袋", "虎丰P.C32.5R包装", "之江P.C32.5R包装","虎丰M32.5包装"};
+
+        List<MaterialName> materialNames=orderOperateService.getAllMaterialNames();
+        String[] cement_list = materialNames.size()==0?null:new String[materialNames.size()];
+
+        for(int i=0;i<materialNames.size();++i){
+            cement_list[i]=materialNames.get(i).getMaterialName();
+        }
 
         JComboBox<String> cement_Type_box = new JComboBox<String>(cement_list);
         cement_Type_box.setBounds((int) round(440 * sizecoeW), (int) round(10 * sizecoeH), (int) round(150 * sizecoeW), (int) round(35 * sizecoeH));
@@ -205,6 +214,11 @@ public class HistoryFrame extends JFrame {
                 String bag_No_te = null;
                 String cement_Type_te = null;
                 String dun_te = null;
+                String pl_no_te=null;
+
+                if(line_No.isSelected()){
+                    pl_no_te=line_No_box.getSelectedItem().toString();
+                }
 
                 if(bag_No.isSelected()){
                     bag_No_te = bag_No_box.getSelectedItem().toString();
@@ -222,24 +236,30 @@ public class HistoryFrame extends JFrame {
 
                 SimpleDateFormat table_format =new SimpleDateFormat("yyyy年MM月dd日 hh时mm分ss秒");
                 SimpleDateFormat db_format =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                Date start_time=null;
-                Date end_time=null;
+                Instant start_time=null;
+                Instant end_time=null;
                 try {
-                    start_time= table_format.parse(start_date);
-                    end_time=table_format.parse(end_date);
+                    start_time= table_format.parse(start_date).toInstant();
+                    end_time=table_format.parse(end_date).toInstant();
                 } catch (ParseException e1) {
                     logger.error(e1);
                 }
                 //TODO 历史订单查询
 
+                List<Order> historyOrders=orderOperateService.findOrders(
+                        pl_no_te==null?null:Integer.valueOf(pl_no_te),
+                        bag_No_te==null?null:Integer.valueOf(bag_No_te),
+                        cement_Type_te,
+                        start_time,
+                        end_time,
+                        dun_te==null?null:Double.parseDouble(dun_te)
+                        );
 //                orderOperateService.findOrders();
 //                java.util.List<Order> results=Pack_DB_Record.find_pack_history_order(bag_No_te,cement_Type_te,db_format.format(start_time),db_format.format(end_time),dun_te==null?null:Double.parseDouble(dun_te));
-//                ZoneId systemDefault = ZoneId.systemDefault();
-//                for(Order order:results){
-//                    historyTable.defaultModel.insertRow(0, new Object[]{order.getVehicleno(),order.getMaterial(),order.getBillcode(),order.getPro_weight(),order.getTotal_amount(), LocalDateTime.ofInstant(order.getCreate_time(), systemDefault).toString()});
-//                    //        defaultModel.insertRow();
-//
-//                }
+                ZoneId systemDefault = ZoneId.systemDefault();
+                for(Order order:historyOrders){
+                    historyTable.defaultModel.insertRow(0, new Object[]{order.getVehicleno(),order.getMaterial(),order.getBillcode(),order.getPro_weight(),order.getTotal_amount(), LocalDateTime.ofInstant(order.getCreate_time(), systemDefault).toString()});
+                }
 
                  total_dun_d = 0;
                  total_bao_d = 0;

@@ -35,8 +35,8 @@ public class OrderService {
     }
 
     @Transactional(isolation = Isolation.READ_COMMITTED)
-    public List<Order> getOrders(int packIndex, String meterialName, Instant start_time, Instant end_time, Double limit_weight){
-        return orderOperate.getOrders( packIndex,  meterialName,  start_time,  end_time,  limit_weight);
+    public List<Order> getOrders(Integer plno,Integer packIndex, String meterialName, Instant start_time, Instant end_time, Double limit_weight){
+        return orderOperate.getOrders( plno,packIndex,  meterialName,  start_time,  end_time,  limit_weight);
     }
 
 }

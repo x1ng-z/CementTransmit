@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author zzx
@@ -124,8 +125,8 @@ public class OrderOperateService {
     }
 
     /**历史单据查找**/
-    public List<Order> findOrders(int packIndex, String meterialName, Instant start_time, Instant end_time, Double limit_weight){
-        return orderService.getOrders( packIndex,  meterialName,  start_time,  end_time,  limit_weight);
+    public List<Order> findOrders(Integer plno,Integer packIndex, String meterialName, Instant start_time, Instant end_time, Double limit_weight){
+        return orderService.getOrders(plno, packIndex,  meterialName,  start_time,  end_time,  limit_weight);
     }
 
     /**重要结构数据*/
@@ -139,5 +140,10 @@ public class OrderOperateService {
 
     public List<MaterialName> getAllMaterialNames(){
         return packer.getMaterialName();
+    }
+    /*得到包装机号*/
+    public Set<Integer> getAllPackmachineOrder(){
+        return packer.getPackerConfigure().keySet();
+
     }
 }

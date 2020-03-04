@@ -37,7 +37,7 @@
     </select>
 
     <select id="getMaterialName" resultType="hs.modle.MaterialName" >
-        select * from
+        select * from materialname
     </select>
 
 </mapper>

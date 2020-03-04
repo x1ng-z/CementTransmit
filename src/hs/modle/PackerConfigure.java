@@ -9,8 +9,8 @@ import java.util.List;
  */
 public class PackerConfigure {
     int id;
-    int deviceOrder;
-    int productLine;
+    int deviceOrder;//包装机唯一标识号，标识是几号包机
+    int productLine;//产线唯一标识号
     String deviceIp;
     boolean isHeartbeat;
     int offLineSecond;

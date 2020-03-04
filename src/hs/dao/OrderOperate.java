@@ -15,6 +15,6 @@ import java.util.List;
  */
 public interface OrderOperate {
     void insertOrder(Order order);
-    List<Order> getOrders(@Param("packIndex") int packIndex, @Param("meterialName")String meterialName, @Param("start_time")Instant start_time, @Param("end_time")Instant end_time, @Param("limit_weight")Double limit_weight);
+    List<Order> getOrders(@Param("ProductLineno") Integer ProductLineno,@Param("packIndex") Integer packIndex, @Param("meterialName")String meterialName, @Param("start_time")Instant start_time, @Param("end_time")Instant end_time, @Param("limit_weight")Double limit_weight);
     void updateOrder(Order order);
 }
