@@ -141,9 +141,12 @@ public class OrderOperateService {
     public List<MaterialName> getAllMaterialNames(){
         return packer.getMaterialName();
     }
-    /*得到包装机号*/
+    /**得到包装机号*/
     public Set<Integer> getAllPackmachineOrder(){
         return packer.getPackerConfigure().keySet();
-
+    }
+    /**得到常用车牌*/
+    public List<String> getConVechel(){
+        return packer.getCommonnVechel();
     }
 }

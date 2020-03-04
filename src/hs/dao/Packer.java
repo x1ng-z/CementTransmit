@@ -16,6 +16,7 @@ public interface Packer {
     @MapKey("deviceOrder")
     java.util.Map<Integer,PackerConfigure> getPackerConfigure();
     List<MaterialName> getMaterialName();
+    List<String> getCommonnVechel();
     void addPackConfigure(@Param("packerConfigure") PackerConfigure packerConfigure);
     void updatePackConfigure(@Param("packerConfigure") PackerConfigure packerConfigure);
     void delectPackConfigure(@Param("id") int id);

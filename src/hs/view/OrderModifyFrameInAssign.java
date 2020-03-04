@@ -189,6 +189,7 @@ public class OrderModifyFrameInAssign extends JDialog {
         carbtnPanel.setBounds((int)round(350*sizecoeW),(int)round(100*sizecoeH),(int)round(100*sizecoeW),(int)round(130*sizecoeH));
         bottom_rightP.add(carbtnPanel);
 
+
         JButton zhe_Btn = new JButton("浙");
         JButton gan_Btn = new JButton("赣");
         JButton xiang_Btn = new JButton("湘");
@@ -199,6 +200,12 @@ public class OrderModifyFrameInAssign extends JDialog {
         JButton gui_Btn = new JButton("桂");
 
         JButton[] carbtnArray = new JButton[]{zhe_Btn,gan_Btn,xiang_Btn,yue_Btn,yu_Btn,wan_Btn,e_Btn,gui_Btn};
+
+        java.util.List<String> configConnvechel=orderOperateService.getConVechel();
+        int intermVech=0;
+        for(String vchel:configConnvechel){
+            carbtnArray[intermVech++].setText(vchel);
+        }
         for(JButton car_button : carbtnArray){
             car_button.setForeground(Color.BLUE);
             car_button.setBorder(raisedBevelBorder);

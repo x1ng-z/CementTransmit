@@ -34,7 +34,7 @@ public class MainFrame extends JFrame {
 
     private Double sizecoeW, sizecoeH;
     private JButton lineP_L1_btn1; //lineP_L1_btn2, lineP_L2_btn3, lineP_L2_btn4, lineP_L3_btn5, lineP_L3_btn6;
-    private String car_No_text, car_lane_text, cement_type_text, pre_load_text, real_load_text, custom_No_text, cement_batch_text, deliver_No_text;
+    private String car_No_text, car_lane_text, cement_type_text, pre_bagcount_text, real_load_text, custom_No_text, cement_batch_text, deliver_No_text;
     private UnassignOrderTable unassignOrderTable;
 //    private AssignOrderTable car_Table1, car_Table2, car_Table3;
 
@@ -527,7 +527,8 @@ public class MainFrame extends JFrame {
                     car_lane_text = "null";
                     cement_type_text = cement_type_box.getSelectedItem().toString();
 //                cement_type_text = cement_type_box.getSelectedItem().toString();
-                    pre_load_text = pre_load_F1.getText();
+                    pre_bagcount_text = pre_load_F1.getText();
+                    ;
                     real_load_text = "0";
                     custom_No_text = custom_No_F.getText();
                     cement_batch_text = cement_batch_F.getText();
@@ -537,7 +538,7 @@ public class MainFrame extends JFrame {
                     logger.info("新增"+deliver_No_text);
                     order.setBillcode(deliver_No_text);
                     order.setVehicleno(car_No_text);
-                    order.setTotal_amount(Integer.parseInt(pre_load_text));
+                    order.setTotal_amount(Integer.parseInt(pre_bagcount_text));
                     order.setAlready_amount(0);
                     order.setMaterial(cement_type_text);
                     order.setConsumer_code(custom_No_text);
@@ -546,7 +547,7 @@ public class MainFrame extends JFrame {
                     order.setLaneno_alias(null);
                     order.setCreate_time(Instant.now());
                     order.setPk_delivery(CodeHelper.getUUID());
-                    order.setPro_weight(Double.parseDouble(pre_load_text));
+                    order.setPro_weight(Double.parseDouble(pre_load_F.getText()));
 
                     orderOperateService.addOrderToUnassignList(order);
                     MainFrame.this.flushAssignOrderTable();
@@ -574,6 +575,12 @@ public class MainFrame extends JFrame {
         JButton gui_Btn = new JButton("桂");
 
         JButton[] carbtnArray = new JButton[]{zhe_Btn, gan_Btn, xiang_Btn, yue_Btn, yu_Btn, wan_Btn, e_Btn, gui_Btn};
+        java.util.List<String> configConnvechel=orderOperateService.getConVechel();
+        int intermVech=0;
+        for(String vchel:configConnvechel){
+            carbtnArray[intermVech++].setText(vchel);
+        }
+
         for (JButton car_button : carbtnArray) {
             car_button.setForeground(Color.BLUE);
             car_button.setBorder(raisedBevelBorder);
