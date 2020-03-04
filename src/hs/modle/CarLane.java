@@ -61,6 +61,11 @@ public class CarLane {
             logger.error("don't find index="+index+"order");
             return false;
         }
+        //已装数量比总数量大，修改失败
+        if(oldorder.getAlready_amount()>neworder.getTotal_amount()){
+            logger.info("已装包数："+oldorder.getAlready_amount()+" 订单总数："+neworder.getTotal_amount()+" 修改失败！");
+            return false;
+        }
 //        waitExecuteOfOrders.set(index,neworder);no replace ,just update part properties
         oldorder.setVehicleno(neworder.getVehicleno());
         oldorder.setMaterial(neworder.getMaterial());

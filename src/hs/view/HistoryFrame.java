@@ -1,6 +1,7 @@
 package hs.view;
 
 
+import hs.service.OrderOperateService;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -23,8 +24,9 @@ public class HistoryFrame extends JFrame {
     public static Logger logger = Logger.getLogger(HistoryFrame.class);
     double total_dun_d = 0;
     double total_bao_d = 0;
-    public HistoryFrame(Double sizecoeW, Double sizecoeH){
-
+    private OrderOperateService orderOperateService;
+    public HistoryFrame(Double sizecoeW, Double sizecoeH,OrderOperateService orderOperateService){
+        this.orderOperateService=orderOperateService;
         setLayout(null);
         Font font14= new Font("宋体",Font.BOLD,(int)round(14*sizecoeW));
         Font font16= new Font("宋体",Font.BOLD,(int)round(16*sizecoeW));
@@ -46,8 +48,9 @@ public class HistoryFrame extends JFrame {
         top_p1.setLayout(null);
         top_Panel.add(top_p1);
 
+        /**包装机选择*/
         JCheckBox bag_No = new JCheckBox("包机号：");
-        bag_No.setBounds((int) round(50 * sizecoeW), (int) round(5 * sizecoeH), (int) round(120 * sizecoeW), (int) round(40 * sizecoeH));
+        bag_No.setBounds((int) round(10 * sizecoeW), (int) round(5 * sizecoeH), (int) round(120 * sizecoeW), (int) round(40 * sizecoeH));
         bag_No.setFont(font18);
         top_p1.add(bag_No);
         java.util.List<String> tmp_packname=new ArrayList();
@@ -61,7 +64,7 @@ public class HistoryFrame extends JFrame {
         bag_list=tmp_packname.toArray(bag_list);
 
         JComboBox<String> bag_No_box = new JComboBox<String>(bag_list);
-        bag_No_box.setBounds((int) round(190 * sizecoeW), (int) round(10 * sizecoeH), (int) round(180 * sizecoeW), (int) round(35 * sizecoeH));
+        bag_No_box.setBounds((int) round(150 * sizecoeW), (int) round(10 * sizecoeH), (int) round(180 * sizecoeW), (int) round(35 * sizecoeH));
         bag_No_box.setFont(font14);
         top_p1.add(bag_No_box);
 
@@ -90,16 +93,17 @@ public class HistoryFrame extends JFrame {
         top_Panel.add(top_p2);
 
         JCheckBox cement_Type = new JCheckBox("水泥品种：");
-        cement_Type.setBounds((int) round(50 * sizecoeW), (int) round(5 * sizecoeH), (int) round(140 * sizecoeW), (int) round(50 * sizecoeH));
+        cement_Type.setBounds((int) round(10 * sizecoeW), (int) round(5 * sizecoeH), (int) round(140 * sizecoeW), (int) round(50 * sizecoeH));
         cement_Type.setFont(font18);
         top_p2.add(cement_Type);
 
+        /**品种选择*/
         String[] cement_list = new String[]{
                 "","超丰P.O42.5包装", "超丰P.O42.5纸袋", "虎丰P.O42.5包装", "之江P.O42.5包装",
                 "超丰P.C32.5R包装", "超丰P.C32.5R纸袋", "虎丰P.C32.5R包装", "之江P.C32.5R包装","虎丰M32.5包装"};
 
         JComboBox<String> cement_Type_box = new JComboBox<String>(cement_list);
-        cement_Type_box.setBounds((int) round(190 * sizecoeW), (int) round(10 * sizecoeH), (int) round(180 * sizecoeW), (int) round(35 * sizecoeH));
+        cement_Type_box.setBounds((int) round(150 * sizecoeW), (int) round(10 * sizecoeH), (int) round(180 * sizecoeW), (int) round(35 * sizecoeH));
         cement_Type_box.setFont(font14);
         top_p2.add(cement_Type_box);
 
@@ -211,7 +215,9 @@ public class HistoryFrame extends JFrame {
                 } catch (ParseException e1) {
                     logger.error(e1);
                 }
-                //TODO
+                //TODO 历史订单查询
+
+//                orderOperateService.findOrders();
 //                java.util.List<Order> results=Pack_DB_Record.find_pack_history_order(bag_No_te,cement_Type_te,db_format.format(start_time),db_format.format(end_time),dun_te==null?null:Double.parseDouble(dun_te));
 //                ZoneId systemDefault = ZoneId.systemDefault();
 //                for(Order order:results){

@@ -144,8 +144,7 @@ public class PackMachine implements Runnable {
         DefaultLaneContext checkctx = lanePipe.head.next;
         while (checkctx != lanePipe.tail) {
             if (checkctx.getLane().getLaneIndex() == (laneorder)) {
-                checkctx.getLane().modifyOrderByIndex(getAllSortOrder().get(index), neworder);
-                return true;
+                return checkctx.getLane().modifyOrderByIndex(getAllSortOrder().get(index), neworder);
             }
             checkctx = checkctx.next;
         }

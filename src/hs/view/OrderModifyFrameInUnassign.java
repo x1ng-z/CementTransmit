@@ -19,10 +19,14 @@ import static java.lang.Math.round;
 public class OrderModifyFrameInUnassign extends JDialog {
     private int edit_row;
     private OrderOperateService orderOperateService;
+    private double sizecoeH;
+    private double sizecoeW;
 
     public OrderModifyFrameInUnassign(Double sizecoeH, Double sizecoeW, String[] carmessge, UnassignOrderTable carline_Table, int edit_row, OrderOperateService orderOperateService,MainFrame mainFrame){
         this.edit_row=edit_row;
         this. orderOperateService= orderOperateService;
+        this.sizecoeW=sizecoeW;
+        this.sizecoeH=sizecoeH;
 
 
         setTitle("车辆信息录入");
@@ -230,30 +234,13 @@ public class OrderModifyFrameInUnassign extends JDialog {
                 new_order.setConsumer_code(carmessge5);
                 new_order.setBatch_no(carmessge6);
                 new_order.setBillcode(carmessge7);
-//                new_order.setPk_delivery(old_order.getPk_delivery());
-
-                    orderOperateService.modifyOrderInUnassignList(edit_row,new_order);
-    //                Order old_order=Pack_UnssigedList_Manager.getInstance().get_unssig_order(edit_row);
-    //                Pack_ManulOrder new_order = new Pack_ManulOrder();
-    //                new_order.setVehicleno(carmessge0);
-    //                new_order.setAssign_time(null);
-
-    //                if (carline_Table.getValueAt(selected_row, 1).toString().equals("null")) {
-    //                    order.setLaneno_alias(null);
-    //                } else {
-    //                    order.setLaneno_alias(Integer.parseInt(carline_Table.getValueAt(selected_row, 1).toString()));
-    //                }
-//                    new_order.setMaterial(carmessge2);
-//                    new_order.setTotal_amount(Integer.parseInt(carmessge3));
-//                    new_order.setAlready_amount(old_order.getAlready_amount());
-//                    new_order.setConsumer_code(carmessge5);
-//                    new_order.setBatch_no(carmessge6);
-//                    new_order.setBillcode(carmessge7);
-//                    new_order.setPk_delivery(old_order.getPk_delivery());
-
-//                    Pack_UnssigedList_Manager.getInstance().modify(edit_row,new_order);
-                    mainFrame.flushAssignOrderTable();
-                    dispose();
+//
+                boolean isOperatesuccess=orderOperateService.modifyOrderInUnassignList(edit_row,new_order);
+                if(!isOperatesuccess){
+                    failedModifyDialog();
+                }
+                mainFrame.flushAssignOrderTable();
+                dispose();
             }
         });
 
@@ -263,5 +250,31 @@ public class OrderModifyFrameInUnassign extends JDialog {
                 dispose();
             }
         });
+    }
+
+    private void failedModifyDialog() {
+        Border raisedBevelBorder = BorderFactory.createRaisedBevelBorder();
+        JDialog dialog = new JDialog();
+        dialog.setTitle("修改订单");
+        dialog.setSize((int) round(300 * sizecoeW), (int) round(160 * sizecoeH));
+        dialog.setLocationRelativeTo(this.getContentPane());
+        dialog.setLayout(null);
+        JLabel message_L = new JLabel("已装数量大于修改后的订单总数，修改失败！", JLabel.CENTER);
+        message_L.setBounds((int) round(0 * sizecoeW), (int) round(20 * sizecoeH), (int) round(300 * sizecoeW), (int) round(50 * sizecoeH));
+        JButton OK_Btn = new JButton("确定");
+        OK_Btn.setBorder(raisedBevelBorder);
+        OK_Btn.setBackground(new Color(238, 238, 238));
+        OK_Btn.setBounds((int) round(120 * sizecoeW), (int) round(70 * sizecoeH), (int) round(60 * sizecoeW), (int) round(40 * sizecoeH));
+        dialog.add(message_L);
+        dialog.add(OK_Btn);
+        OK_Btn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dialog.dispose();
+            }
+        });
+
+        dialog.setVisible(true);
+        dialog.setAlwaysOnTop(true);
     }
 }

@@ -27,6 +27,8 @@ public class OrderModifyFrameInAssign extends JDialog {
     private OrderOperateService orderOperateService;
     private Location location;
     private MainFrame mainFrame;
+    private double sizecoeH;
+    private double sizecoeW;
     public OrderModifyFrameInAssign(Double sizecoeH, Double sizecoeW, String[] carmessge, AssignOrderTable assignOrderTable, int index, ButtonGroup classSelect, Location location, OrderOperateService orderOperateService, MainFrame mainFrame){
         this.edit_row=index;
         this.car_Table=assignOrderTable;
@@ -35,6 +37,8 @@ public class OrderModifyFrameInAssign extends JDialog {
         this.location=location;
         this. orderOperateService= orderOperateService;
         this.mainFrame=mainFrame;
+        this.sizecoeH=sizecoeH;
+        this.sizecoeW=sizecoeW;
         setTitle("车辆信息录入");
         setAlwaysOnTop(true);
         setSize((int)round(515*sizecoeW),(int)round(280*sizecoeH));
@@ -240,31 +244,13 @@ public class OrderModifyFrameInAssign extends JDialog {
                 pack_manulOrder.setConsumer_code(carmessge5);
                 pack_manulOrder.setBatch_no(carmessge6);
                 pack_manulOrder.setBillcode(carmessge7);
-//                pack_manulOrder.setClass_no(classSelect.getSelection().getActionCommand());
-//                pack_manulOrder.setProductLineIndex(location.getProductionLine());
-//                pack_manulOrder.setPackMachineIndex(location.getPackmachineIndex());
-
-//                pack_manulOrder.setPk_delivery(assignOrderTable.getValueAt(index,8).toString());
 
 
+                boolean isoperatesuccess=orderOperateService.modifyOrderInPackList(location,edit_row,pack_manulOrder);
+                if(!isoperatesuccess){
+                    failedModifyDialog();
+                }
 
-                orderOperateService.modifyOrderInPackList(location,edit_row,pack_manulOrder);
-
-//                Pack_Machine pick=pack_machine;
-//
-//                if(pick!=null){
-//
-//                    boolean is_succss=pick.modifyOrder(new Integer(assignOrderTable.getValueAt(index,1).toString()),pack_manulOrder);
-//                    if(is_succss){
-//                        assignOrderTable.setValueAt(carmessge0,index,0);
-//                        assignOrderTable.setValueAt(carmessge2,index,2);
-//                        assignOrderTable.setValueAt(carmessge3,index,3);
-//                        assignOrderTable.setValueAt(carmessge5,index,5);
-//                        assignOrderTable.setValueAt(carmessge6,index,6);
-//                        assignOrderTable.setValueAt(carmessge7,index,7);
-//
-//                    }
-//                }
                 mainFrame.flushAssignOrderTable();
                 dispose();
             }
@@ -276,5 +262,32 @@ public class OrderModifyFrameInAssign extends JDialog {
                 dispose();
             }
         });
+    }
+
+
+    private void failedModifyDialog() {
+        Border raisedBevelBorder = BorderFactory.createRaisedBevelBorder();
+        JDialog dialog = new JDialog();
+        dialog.setTitle("修改订单");
+        dialog.setSize((int) round(300 * sizecoeW), (int) round(160 * sizecoeH));
+        dialog.setLocationRelativeTo(this.getContentPane());
+        dialog.setLayout(null);
+        JLabel message_L = new JLabel("已装数量大于修改后的订单总数，修改失败！", JLabel.CENTER);
+        message_L.setBounds((int) round(0 * sizecoeW), (int) round(20 * sizecoeH), (int) round(300 * sizecoeW), (int) round(50 * sizecoeH));
+        JButton OK_Btn = new JButton("确定");
+        OK_Btn.setBorder(raisedBevelBorder);
+        OK_Btn.setBackground(new Color(238, 238, 238));
+        OK_Btn.setBounds((int) round(120 * sizecoeW), (int) round(70 * sizecoeH), (int) round(60 * sizecoeW), (int) round(40 * sizecoeH));
+        dialog.add(message_L);
+        dialog.add(OK_Btn);
+        OK_Btn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dialog.dispose();
+            }
+        });
+
+        dialog.setVisible(true);
+        dialog.setAlwaysOnTop(true);
     }
 }

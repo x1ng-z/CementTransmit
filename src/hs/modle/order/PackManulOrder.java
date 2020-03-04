@@ -11,7 +11,7 @@ public class PackManulOrder implements Order {
      *
      * 车牌 物料 吨位 磅单号 线别 水泥批次 班组 客户别名 客户号 最后一个pk
      * */
-
+    private Integer id;
     private String vehicleno;
     private String material;
     private String billcode;
@@ -256,5 +256,13 @@ public class PackManulOrder implements Order {
 
     public void setCarLaneHardCode(String carLaneHardCode) {
         this.carLaneHardCode = carLaneHardCode;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 }

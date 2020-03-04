@@ -3,6 +3,9 @@ package hs.modle.order;
 import java.time.Instant;
 
 public interface Order extends Comparable {
+    public Integer getId();
+
+    public void setId(Integer id) ;
 
     public String getVehicleno();
 

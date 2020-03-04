@@ -34,8 +34,11 @@ public class UnassignOrderList {
         unsignOrder.remove(index);
     }
 
-    public void modifyOrder(int index,Order newOrder){
+    public boolean modifyOrder(int index,Order newOrder){
         Order oldOrder=unsignOrder.get(index);
+        if(oldOrder.getAlready_amount()>newOrder.getTotal_amount()){
+            return false;
+        }
         oldOrder.setVehicleno(newOrder.getVehicleno());
         oldOrder.setMaterial(newOrder.getMaterial());
         oldOrder.setTotal_amount(newOrder.getTotal_amount());
@@ -43,6 +46,7 @@ public class UnassignOrderList {
         oldOrder.setConsumer_code(newOrder.getConsumer_code());
         oldOrder.setBatch_no(newOrder.getBatch_no());
         oldOrder.setBillcode(newOrder.getBillcode());
+        return true;
     }
 
     public Location assignOrder(int index,int productline,int packmachine,int carline){

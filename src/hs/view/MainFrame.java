@@ -142,7 +142,7 @@ public class MainFrame extends JFrame {
 
         m11.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                HistoryFrame historyFrame = new HistoryFrame(sizecoeW,sizecoeH);
+                HistoryFrame historyFrame = new HistoryFrame(sizecoeW,sizecoeH,orderOperateService);
                 historyFrame.setTitle("历史查询");
                 historyFrame.setBounds((int) round(20 * sizecoeW), (int) round(50 * sizecoeH), (int) round(1560 * sizecoeW), (int) round(850 * sizecoeH));
                 historyFrame.setVisible(true);

@@ -36,4 +36,8 @@
           lane.laneOrder from device left join  lane on device.deviceOrder = lane.device_id;
     </select>
 
+    <select id="getMaterialName" resultType="hs.modle.MaterialName" >
+        select * from
+    </select>
+
 </mapper>
