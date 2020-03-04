@@ -34,7 +34,7 @@ public class HistoryFrame extends JFrame {
         Font font20= new Font("宋体",Font.BOLD,(int)round(20*sizecoeW));
         Border raisedBevelBorder =BorderFactory.createRaisedBevelBorder();
         Border etchedBorderL = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
-        Border titleBorder =BorderFactory.createTitledBorder(etchedBorderL,"查询条件",TitledBorder.LEFT,TitledBorder.TOP,font18);
+        Border titleBorder =BorderFactory.createTitledBorder(etchedBorderL,"查询条件",TitledBorder.LEFT,TitledBorder.TOP,font16);
 
 /*---------------top_Panel上层面板------------------*/
         JPanel top_Panel = new JPanel();
@@ -44,13 +44,26 @@ public class HistoryFrame extends JFrame {
         add(top_Panel);
 
         JPanel top_p1 = new JPanel();
-        top_p1.setBounds((int) round(80 * sizecoeW), (int) round(15 * sizecoeH), (int) round(1400 * sizecoeW), (int) round(45 * sizecoeH));
+        top_p1.setBounds((int) round(10 * sizecoeW), (int) round(20 * sizecoeH), (int) round(1400 * sizecoeW), (int) round(45 * sizecoeH));
         top_p1.setLayout(null);
         top_Panel.add(top_p1);
 
+        /**产线选择*/
+        JCheckBox line_No = new JCheckBox("生产线：");
+        line_No.setBounds((int) round(20 * sizecoeW), (int) round(5 * sizecoeH), (int) round(120 * sizecoeW), (int) round(40 * sizecoeH));
+        line_No.setFont(font18);
+        top_p1.add(line_No);
+
+        String[] line_list = new String[]{"","一线","二线"};
+
+        JComboBox<String> line_No_box = new JComboBox<String>(line_list);
+        line_No_box.setBounds((int) round(140 * sizecoeW), (int) round(10 * sizecoeH), (int) round(150 * sizecoeW), (int) round(35 * sizecoeH));
+        line_No_box.setFont(font14);
+        top_p1.add(line_No_box);
+
         /**包装机选择*/
         JCheckBox bag_No = new JCheckBox("包机号：");
-        bag_No.setBounds((int) round(10 * sizecoeW), (int) round(5 * sizecoeH), (int) round(120 * sizecoeW), (int) round(40 * sizecoeH));
+        bag_No.setBounds((int) round(320 * sizecoeW), (int) round(5 * sizecoeH), (int) round(120 * sizecoeW), (int) round(40 * sizecoeH));
         bag_No.setFont(font18);
         top_p1.add(bag_No);
         java.util.List<String> tmp_packname=new ArrayList();
@@ -64,17 +77,17 @@ public class HistoryFrame extends JFrame {
         bag_list=tmp_packname.toArray(bag_list);
 
         JComboBox<String> bag_No_box = new JComboBox<String>(bag_list);
-        bag_No_box.setBounds((int) round(150 * sizecoeW), (int) round(10 * sizecoeH), (int) round(180 * sizecoeW), (int) round(35 * sizecoeH));
+        bag_No_box.setBounds((int) round(440 * sizecoeW), (int) round(10 * sizecoeH), (int) round(150 * sizecoeW), (int) round(35 * sizecoeH));
         bag_No_box.setFont(font14);
         top_p1.add(bag_No_box);
 
         JLabel start_Time = new JLabel("开始日期：",JLabel.CENTER);
-        start_Time.setBounds((int) round(440 * sizecoeW), (int) round(5 * sizecoeH), (int) round(120 * sizecoeW), (int) round(40 * sizecoeH));
+        start_Time.setBounds((int) round(620 * sizecoeW), (int) round(5 * sizecoeH), (int) round(120 * sizecoeW), (int) round(40 * sizecoeH));
         start_Time.setFont(font18);
         top_p1.add(start_Time);
 
         JButton start_datebtn = new DateSelector();
-        start_datebtn.setBounds((int)round(540*sizecoeW),(int)round(10*sizecoeH),(int)round(250*sizecoeW),(int)round(35*sizecoeH));
+        start_datebtn.setBounds((int)round(740*sizecoeW),(int)round(10*sizecoeH),(int)round(250*sizecoeW),(int)round(35*sizecoeH));
         start_datebtn.setFont(font14);
         start_datebtn.setBackground(new Color(139, 137, 137));
         start_datebtn.setForeground(Color.white);
@@ -84,16 +97,16 @@ public class HistoryFrame extends JFrame {
         findBtn.setFont(font16);
         findBtn.setBorder(raisedBevelBorder);
         findBtn.setBackground(new Color(238,238,238));
-        findBtn.setBounds((int)round(900*sizecoeW),(int)round(10*sizecoeH),(int)round(80*sizecoeW),(int)round(35*sizecoeH));
+        findBtn.setBounds((int)round(1020*sizecoeW),(int)round(10*sizecoeH),(int)round(80*sizecoeW),(int)round(35*sizecoeH));
         top_p1.add(findBtn);
 
         JPanel top_p2 = new JPanel();
-        top_p2.setBounds((int) round(80 * sizecoeW), (int) round(60 * sizecoeH), (int) round(1400 * sizecoeW), (int) round(45 * sizecoeH));
+        top_p2.setBounds((int) round(10 * sizecoeW), (int) round(65 * sizecoeH), (int) round(1400 * sizecoeW), (int) round(45 * sizecoeH));
         top_p2.setLayout(null);
         top_Panel.add(top_p2);
 
         JCheckBox cement_Type = new JCheckBox("水泥品种：");
-        cement_Type.setBounds((int) round(10 * sizecoeW), (int) round(5 * sizecoeH), (int) round(140 * sizecoeW), (int) round(50 * sizecoeH));
+        cement_Type.setBounds((int) round(320 * sizecoeW), (int) round(5 * sizecoeH), (int) round(120 * sizecoeW), (int) round(50 * sizecoeH));
         cement_Type.setFont(font18);
         top_p2.add(cement_Type);
 
@@ -103,38 +116,40 @@ public class HistoryFrame extends JFrame {
                 "超丰P.C32.5R包装", "超丰P.C32.5R纸袋", "虎丰P.C32.5R包装", "之江P.C32.5R包装","虎丰M32.5包装"};
 
         JComboBox<String> cement_Type_box = new JComboBox<String>(cement_list);
-        cement_Type_box.setBounds((int) round(150 * sizecoeW), (int) round(10 * sizecoeH), (int) round(180 * sizecoeW), (int) round(35 * sizecoeH));
+        cement_Type_box.setBounds((int) round(440 * sizecoeW), (int) round(10 * sizecoeH), (int) round(150 * sizecoeW), (int) round(35 * sizecoeH));
         cement_Type_box.setFont(font14);
         top_p2.add(cement_Type_box);
 
         JLabel end_Time = new JLabel("结束日期：", JLabel.CENTER);
-        end_Time.setBounds((int) round(440 * sizecoeW), (int) round(5 * sizecoeH), (int) round(120 * sizecoeW), (int) round(50 * sizecoeH));
+        end_Time.setBounds((int) round(620 * sizecoeW), (int) round(5 * sizecoeH), (int) round(120 * sizecoeW), (int) round(50 * sizecoeH));
         end_Time.setFont(font18);
         top_p2.add(end_Time);
 
+        JButton end_datebtn = new DateSelector();
+        end_datebtn.setBounds((int)round(740*sizecoeW),(int)round(10*sizecoeH),(int)round(250*sizecoeW),(int)round(35*sizecoeH));
+        end_datebtn.setFont(font14);
+        end_datebtn.setBackground(new Color(139, 137, 137));
+        end_datebtn.setForeground(Color.white);
+        top_p2.add(end_datebtn);
+
         JCheckBox dun20_box = new JCheckBox("小于");
         dun20_box.setFont(font18);
-        dun20_box.setBounds((int)round(900*sizecoeW),(int)round(10*sizecoeH),(int)round(80*sizecoeW),(int)round(35*sizecoeH));
+        dun20_box.setBounds((int)round(1020*sizecoeW),(int)round(10*sizecoeH),(int)round(80*sizecoeW),(int)round(35*sizecoeH));
         top_p2.add(dun20_box);
 
         JTextField number_box = new JTextField();
         number_box.setFont(font18);
         number_box.setText("20");
-        number_box.setBounds((int)round(985*sizecoeW),(int)round(10*sizecoeH),(int)round(40*sizecoeW),(int)round(35*sizecoeH));
+        number_box.setBounds((int)round(1105*sizecoeW),(int)round(10*sizecoeH),(int)round(40*sizecoeW),(int)round(35*sizecoeH));
         top_p2.add(number_box);
 
         JLabel dun_L = new JLabel("吨");
         dun_L.setFont(font18);
-        dun_L.setBounds((int)round(1025*sizecoeW),(int)round(10*sizecoeH),(int)round(40*sizecoeW),(int)round(35*sizecoeH));
+        dun_L.setBounds((int)round(1145*sizecoeW),(int)round(10*sizecoeH),(int)round(40*sizecoeW),(int)round(35*sizecoeH));
         top_p2.add(dun_L);
 
 
-        JButton end_datebtn = new DateSelector();
-        end_datebtn.setBounds((int)round(540*sizecoeW),(int)round(10*sizecoeH),(int)round(250*sizecoeW),(int)round(35*sizecoeH));
-        end_datebtn.setFont(font14);
-        end_datebtn.setBackground(new Color(139, 137, 137));
-        end_datebtn.setForeground(Color.white);
-        top_p2.add(end_datebtn);
+
 
 /*---------------center_Panel中间面板------------------*/
         JPanel center_Panel = new JPanel();
