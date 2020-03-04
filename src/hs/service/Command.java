@@ -92,7 +92,16 @@ public enum Command{
     RECEIVE_COMPLE("06",null,null){
         @Override
         public Map<String,String> analye(String context) {
-            return null;
+            logger.info(context);
+            Matcher matcher1 = Pattern.compile("(.*a5(.*)015a$)").matcher(context);
+            if(matcher1.find()){
+                Map<String,String> result=new HashMap<>();
+                result.put("laneHardCode",context.substring(10,12));
+                result.put("alreadLoad",CodeHelper.ASCIIToConvertString(context.substring(16,24)));
+                return result;
+            }else {
+                return null;
+            }
         }
 
         @Override

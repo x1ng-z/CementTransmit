@@ -8,7 +8,6 @@ package hs.modle;
 
 
 import hs.modle.order.Order;
-import hs.modle.order.PackManulOrder;
 import hs.service.Command;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -161,7 +160,7 @@ public class PackMachine implements Runnable {
                 if(whichorder.equals(currentLaneContext)){
                     currentExecuteOrder=null;
                 }
-                return checkctx.getLane().deleteOrderByIndex(whichorder);
+                return checkctx.getLane().deleteOrderByOrder(whichorder);
             }
             checkctx = checkctx.next;
         }

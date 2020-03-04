@@ -4,6 +4,7 @@ import hs.modle.CarLane;
 import hs.modle.PackMachine;
 import hs.service.Command;
 import hs.service.SessionManager;
+import hs.view.MainFrame;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandler;
@@ -20,6 +21,8 @@ import java.util.Map;
 @ChannelHandler.Sharable
 @Component
 public class MsgDecoder_Inbound extends ChannelInboundHandlerAdapter {
+    private MainFrame mainFrame;
+
     private org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(MsgDecoder_Inbound.class);
     public MsgDecoder_Inbound() {
         super();
@@ -72,14 +75,35 @@ public class MsgDecoder_Inbound extends ChannelInboundHandlerAdapter {
         getinfo = ByteBufUtil.hexDump(wait_for_read.readBytes(wait_for_read.readableBytes()));
         switch (getinfo.substring(8,10)){
             case "06":
-                Command.RECEIVE_COMPLE.analye(getinfo);
+                results=Command.RECEIVE_COMPLE.analye(getinfo);
+                //移除订单
+                if(results!=null){
+                    PackMachine packMachine=sessionManager.getPackMachineMapByIp().get(clientIp);
+                    for(CarLane carLane:packMachine.getPackerConfigure().getCarLanes()){
+                        if(carLane.getHardCode().equals(results.get("laneHardCode"))){
+                            if(carLane.getWaitExecuteOfOrders().size()!=0){
+                                /**
+                                 * 1、设置当前包数
+                                 * 2、重置包装机当前订单
+                                 * 3、删除车道订单
+                                 * 4、刷新分配列表
+                                 * */
+                                carLane.getWaitExecuteOfOrders().get(0).setAlready_amount(Integer.valueOf(results.get("alreadLoad").trim()));
+                                packMachine.setCurrentExecuteOrder(null);
+                                carLane.deleteOrderByIndex(0);
+                                mainFrame.flushAssignOrderTable();
+
+                            }
+                        }
+                    }
+
+                }
                 break;
             case "07":
                 Command.RECEIVE_KEYSURE.analye(getinfo);
                 break;
             case "04":
                 results=Command.RECEIVE_WEIGHT.analye(getinfo);
-                //TODO sessionManager设置当前包装机的正在进行订单
                 if(results!=null){
                     PackMachine packMachine=sessionManager.getPackMachineMapByIp().get(clientIp);
                     for(CarLane carLane:packMachine.getPackerConfigure().getCarLanes()){
@@ -147,6 +171,10 @@ public class MsgDecoder_Inbound extends ChannelInboundHandlerAdapter {
 
     public SessionManager getSessionManager() {
         return sessionManager;
+    }
+    @Autowired
+    public void setMainFrame(MainFrame mainFrame) {
+        this.mainFrame = mainFrame;
     }
 
 }
