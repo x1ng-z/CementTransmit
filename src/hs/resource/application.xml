@@ -25,8 +25,8 @@
         <property name="ignoreUnresolvablePlaceholders" value="true" />
         <property name="locations">
             <array>
-                <value>classpath:bind.properties</value>
-                <value>classpath:db.properties</value>
+                <value>bind.properties</value>
+                <value>db.properties</value>
             </array>
         </property>
     </bean>

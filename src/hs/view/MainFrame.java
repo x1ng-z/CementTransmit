@@ -280,7 +280,7 @@ public class MainFrame extends JFrame {
                 super.mouseClicked(e);
                 if (e.getButton() == MouseEvent.BUTTON3) {
                     line_bagNo.show(e.getComponent(), e.getX(), e.getY());
-                    int row = unassignOrderTable.rowAtPoint(e.getPoint());
+                    int row = unassignOrderTable.getSelectedRow();
                     logger.info("--row: "+row);
                     unassignOrderTable.setRowSelectionInterval(row, row);
                 }
@@ -330,7 +330,7 @@ public class MainFrame extends JFrame {
                 super.mousePressed(e);
                 if (e.getButton() == MouseEvent.BUTTON1) {
                    logger.info("删除");
-                    int selected_row = unassignOrderTable.rowAtPoint(e.getPoint());
+                    int selected_row = unassignOrderTable.getSelectedRow();
                     int selected_column = unassignOrderTable.columnAtPoint(e.getPoint());
 
                     orderOperateService.delectOrderInUnassignList(selected_column);
@@ -346,7 +346,7 @@ public class MainFrame extends JFrame {
                 super.mousePressed(e);
                 if (e.getButton() == MouseEvent.BUTTON1) {
                     logger.info("分配");
-                    int selected_row = unassignOrderTable.rowAtPoint(e.getPoint());
+                    int selected_row = unassignOrderTable.getSelectedRow();
                     String row_0 = unassignOrderTable.getValueAt(selected_row, 0).toString();
                     String row_1 = unassignOrderTable.getValueAt(selected_row, 1).toString();
                     String row_2 = unassignOrderTable.getValueAt(selected_row, 2).toString();

@@ -82,7 +82,10 @@ public class OrderOperateService {
     public void unassignOrderInPackList(Location location,int index){
         //查询否为车道的第一张订单,如果是第一张订单需要停止包装机
         boolean isneedStop=packMAchineGroup.getProductLineMaps().get(location.getProductionLine()).getDeviceMaps().get(location.getPackmachineIndex()).isFristOrderInCarLane(index);
-
+        if(isneedStop){
+            //不管怎么样可以先设置为null，到ui刷新的时候会进行刷新，获取assignedlist的第一条
+            packMAchineGroup.getProductLineMaps().get(location.getProductionLine()).getDeviceMaps().get(location.getPackmachineIndex()).setCurrentExecuteOrder(null);
+        }
         Order order=packMAchineGroup.unassignSolver(location,index);
 
         unassignOrderList.addUnsignOrder(order);

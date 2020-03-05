@@ -310,7 +310,7 @@ public class CenterPanel extends JPanel {
                 super.mouseClicked(e);
                 if (e.getButton() == MouseEvent.BUTTON3) {
                     car_bagNo.show(e.getComponent(), e.getX(), e.getY());
-                    int row = assignOrderTable.rowAtPoint(e.getPoint());
+                    int row = assignOrderTable.getSelectedRow();
                     assignOrderTable.setRowSelectionInterval(row, row);
                 }
             }
@@ -322,7 +322,7 @@ public class CenterPanel extends JPanel {
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
                 if (e.getButton() == MouseEvent.BUTTON1) {
-                    logger.info("--row="+assignOrderTable.rowAtPoint(e.getPoint()));
+                    logger.info("--row="+assignOrderTable.getSelectedRow());
 
                     int selected_row = assignOrderTable.getSelectedRow();//;
                     Location location=new Location();
@@ -396,7 +396,7 @@ public class CenterPanel extends JPanel {
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
                 if (e.getButton() == MouseEvent.BUTTON1) {
-                    int selected_row = assignOrderTable.rowAtPoint(e.getPoint());
+                    int selected_row = assignOrderTable.getSelectedRow();
 
                     Location location=new Location();
                     location.setProductionLine(pack_machine.getPackerConfigure().getProductLine());
@@ -405,38 +405,10 @@ public class CenterPanel extends JPanel {
                     orderOperateService.delectOrderInPackList(location,selected_row);
                     mainFrame.flushAssignOrderTable();
 
-//                    Map<String, Pack_Machine> machines = Machine_Manger.getInstance().getPack_machines();
-//                    Pack_Machine pick = null;
-//                    for (Pack_Machine machine : machines.values()) {
-//                        if (machine.getPackage_machine_name().equals(machine_name)) {
-//                            pick = machine;
-//                        }
-//                    }
-//                    if (pick != null) {
-//
-//                        boolean is_success = pick.closeOrder(new Integer(assignOrderTable.getValueAt(selected_row, 1).toString()), pack_manulOrder);
-//                        if (is_success) {
-//                            assignOrderTable.defaultModel.removeRow(selected_row);
-//                            MainFrame.getinstance().flushAssignOrderTable();
-//                        }
-//                    }
                 }
             }
         });
 
-        /*-------------firstP_p6---------------*/
-//        JPanel firstP_p6 = new JPanel();
-//        firstP_p6.setBounds((int) round(5 * sizecoeW), (int) round(475 * sizecoeH), (int) round(505 * sizecoeW), (int) round(60 * sizecoeH));
-//        firstP_p3.setBorder(etchedBorder);
-//        firstP_p6.setLayout(null);
-//        add(firstP_p6);
-//
-//        JList carline_list = new JList();
-//        JScrollPane carline_list_pane = new JScrollPane(carline_list);
-//        carline_list_pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-//        carline_list_pane.setBounds((int) round(0 * sizecoeW), (int) round(0 * sizecoeH), (int) round(505 * sizecoeW), (int) round(60 * sizecoeH));
-//
-//        firstP_p6.add(carline_list_pane);
 
         JPopupMenu addbag = new JPopupMenu();
         JMenuItem menuItem = new JMenuItem("补包");
