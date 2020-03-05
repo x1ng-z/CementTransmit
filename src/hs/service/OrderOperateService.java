@@ -116,7 +116,9 @@ public class OrderOperateService {
     public void delectOrderInPackList(Location location,int index){
         //查询否为车道的第一张订单,如果是第一张订单需要停止包装机
         boolean isneed=packMAchineGroup.getProductLineMaps().get(location.getProductionLine()).getDeviceMaps().get(location.getPackmachineIndex()).isFristOrderInCarLane(index);
-
+        if(isneed){
+            packMAchineGroup.getProductLineMaps().get(location.getProductionLine()).getDeviceMaps().get(location.getPackmachineIndex()).setCurrentExecuteOrder(null);
+        }
         Order order=packMAchineGroup.deleteSolver(location,index);
 
         if(isneed&&(order!=null)){

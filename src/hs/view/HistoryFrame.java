@@ -13,6 +13,7 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -200,7 +201,7 @@ public class HistoryFrame extends JFrame {
         total_bao_L.setBounds((int) round(950 * sizecoeW), (int) round(5 * sizecoeH), (int) round(150 * sizecoeW), (int) round(30 * sizecoeH));
         bottom_Panel.add(total_bao_L);
 
-        //todo 查询按钮
+        // 查询按钮
         findBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -244,7 +245,7 @@ public class HistoryFrame extends JFrame {
                 } catch (ParseException e1) {
                     logger.error(e1);
                 }
-                //TODO 历史订单查询
+                // 历史订单查询
 
                 List<Order> historyOrders=orderOperateService.findOrders(
                         pl_no_te==null?null:Integer.valueOf(pl_no_te),
@@ -276,10 +277,10 @@ public class HistoryFrame extends JFrame {
                     total_bao_d += order_bao_d;
                 }
 
-                total_dun_L.setText(total_dun_d+"吨");
+                BigDecimal b   =   new   BigDecimal(total_dun_d);
+                double     f1 =   b.setScale(2,   BigDecimal.ROUND_HALF_UP).doubleValue();
+                total_dun_L.setText(f1+"吨");
                 total_bao_L.setText(total_bao_d+"包");
-
-
 
             }
         });

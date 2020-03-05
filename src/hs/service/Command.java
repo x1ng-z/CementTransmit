@@ -211,7 +211,7 @@ public enum Command{
              * protocol_header
              * */
             tmp_buf.add(Integer.valueOf(0x88).byteValue());
-            tmp_buf.add(Integer.valueOf(0x10).byteValue());
+            tmp_buf.add(Integer.valueOf(0x18).byteValue());
             tmp_buf.add(Integer.valueOf(0x40).byteValue());
             tmp_buf.add(Integer.valueOf(0x10).byteValue());
             /**
