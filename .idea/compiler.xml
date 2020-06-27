@@ -6,11 +6,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="mavenCementTransmit" />
+        <module name="CementTransmit" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="mavenCementTransmit" target="1.5" />
+      <module name="CementTransmit" target="8" />
     </bytecodeTargetLevel>
   </component>
 </project>

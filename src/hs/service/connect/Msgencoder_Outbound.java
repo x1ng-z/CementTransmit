@@ -13,6 +13,11 @@ public class Msgencoder_Outbound extends ChannelOutboundHandlerAdapter {
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
         ByteBuf buf =ctx.alloc().buffer().writeBytes((byte[])msg);
+        logger.info("aaaa: "+msg);
+        byte[] msgs =(byte[])msg;
+        for(byte m:msgs){
+            System.out.print(Integer.toHexString(m&0xff).length()==2?Integer.toHexString(m&0xff):"0"+Integer.toHexString(m&0xff));
+        }
         ctx.writeAndFlush(buf).addListener(new ChannelFutureListener() {
             @Override
             public void operationComplete(ChannelFuture future) throws Exception {

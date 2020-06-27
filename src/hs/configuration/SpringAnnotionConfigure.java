@@ -29,6 +29,9 @@ public class SpringAnnotionConfigure {
     /**
      * 创建包装机管理类，并且将包装机根据配置信息进行构建
      * @Link PackMAchineGroup 内部包含设备线别、线别中包含包装机设备；
+     *
+     * 这里数据库一定要先配置1线的设备、因为界面中会先获取一线的设备数据
+     * device中id是给lane表中的device_id中使用的
      * */
     @Bean("packMAchineGroup")
     @Qualifier("messageBus")

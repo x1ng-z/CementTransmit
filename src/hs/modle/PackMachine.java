@@ -127,6 +127,7 @@ public class PackMachine implements Runnable {
         order.setAssign_time(Instant.now());
         order.setProductLineIndex(packerConfigure.getProductLine());
         order.setPackMachineIndex(packerConfigure.getDeviceOrder());
+
         DefaultLaneContext checkctx = lanePipe.head.next;
         while (checkctx != lanePipe.tail) {
             if (checkctx.getLane().getLaneIndex() == (laneindex)) {
@@ -218,7 +219,7 @@ public class PackMachine implements Runnable {
     //ToDO  把两个车道的首个订单，找出来，然后准备一同下发；
     public void checkNeedExecuteOrderByRecycle() {
         if(!isDevicdConnect){
-           logger.debug(getPackerConfigure().deviceIp+" disconnect so don't check order");
+//           logger.debug(getPackerConfigure().deviceIp+" disconnect so don't check order");
             return;
         }
 

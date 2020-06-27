@@ -114,6 +114,7 @@ public enum Command{
     RECEIVE_ACKNOWLEDGE("08",null,null){
         @Override
         public Map<String,String> analye(String context) {
+            logger.debug(context);
             return null;
         }
 
@@ -272,7 +273,7 @@ public enum Command{
              * */
             tmp_buf.addAll(CodeHelper.StringConvertToASCII(Integer.valueOf(Double.valueOf(orderinfo.getTotal_amount()).intValue()).toString(), 5));
             /**
-             * code
+             * code  客户代码+创建时间+班组+线别+批次号
              * */
             String code=orderinfo.getConsumer_code() + orderinfo.getCreate_time_form_mmdd() + "0"+orderinfo.getClass_no() + orderinfo.getProductLineIndex() + orderinfo.getBatch_no();
             tmp_buf.addAll(CodeHelper.StringConvertToASCII(code,30));

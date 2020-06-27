@@ -10,7 +10,7 @@ import static java.lang.Math.round;
 public class AssignOrderTable extends JTable {
 
     private boolean DEBUG=true;
-    private String[] TitleName={"车牌号","车道","水泥品种","应装包数","已装包数","客户代码","水泥批号","发货单号","pk_delivery"};
+    private String[] TitleName={"车牌号","车道","水泥品种","应装包数","已装包数","客户代码","水泥批号","发货单号","pk_delivery","车道主键"};
     private Object[][] data=null;//new Object[][];
 
     public DefaultTableModel defaultModel=new DefaultTableModel(data,TitleName) {
@@ -63,6 +63,9 @@ public class AssignOrderTable extends JTable {
                     column.setPreferredWidth(100);
                     break;
                 case 7:  //"发货单号"
+                    column.setPreferredWidth(100);
+                    break;
+                case 8:  //"发货单号"
                     column.setPreferredWidth(100);
                     break;
                 default:

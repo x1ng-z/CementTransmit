@@ -24,6 +24,7 @@ public class MsgDecoder_Inbound extends ChannelInboundHandlerAdapter {
     private MainFrame mainFrame;
 
     private org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(MsgDecoder_Inbound.class);
+
     public MsgDecoder_Inbound() {
         super();
     }
@@ -34,19 +35,20 @@ public class MsgDecoder_Inbound extends ChannelInboundHandlerAdapter {
     public void setSessionManager(SessionManager sessionManager) {
         this.sessionManager = sessionManager;
     }
-//    @Autowired
+
+    //    @Autowired
 //    public VehicleMapper vehicleMapper;
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
         InetSocketAddress ipSocket = (InetSocketAddress) ctx.channel().remoteAddress();
         String clientIp = ipSocket.getAddress().getHostAddress();
-        Integer port=ipSocket.getPort();
-        logger.info("come in "+clientIp+":"+port);
-        if (sessionManager.isValideDevice(clientIp)){
-            sessionManager.putHandleContext(clientIp,ctx);
+        Integer port = ipSocket.getPort();
+        logger.info("come in " + clientIp + ":" + port);
+        if (sessionManager.isValideDevice(clientIp)) {
+            sessionManager.putHandleContext(clientIp, ctx);
             sessionManager.getPackMachineMapByIp().get(clientIp).setDevicdConnect(true);
-        }else {
+        } else {
             ctx.close();
         }
 
@@ -57,9 +59,9 @@ public class MsgDecoder_Inbound extends ChannelInboundHandlerAdapter {
         super.channelInactive(ctx);
         InetSocketAddress ipSocket = (InetSocketAddress) ctx.channel().remoteAddress();
         String clientIp = ipSocket.getAddress().getHostAddress();
-        Integer port=ipSocket.getPort();
-        logger.info("come out"+clientIp+":"+port);
-        if(sessionManager.isValideDevice(clientIp)){
+        Integer port = ipSocket.getPort();
+        logger.info("come out" + clientIp + ":" + port);
+        if (sessionManager.isValideDevice(clientIp)) {
             sessionManager.getPackMachineMapByIp().get(clientIp).setDevicdConnect(false);
             sessionManager.removeHandleContext(clientIp);
         }
@@ -70,18 +72,19 @@ public class MsgDecoder_Inbound extends ChannelInboundHandlerAdapter {
         InetSocketAddress ipSocket = (InetSocketAddress) ctx.channel().remoteAddress();
         String clientIp = ipSocket.getAddress().getHostAddress();
         ByteBuf wait_for_read = (ByteBuf) msg;
-        String getinfo=null;
-        Map<String,String> results=null;
+        String getinfo = null;
+        Map<String, String> results = null;
         getinfo = ByteBufUtil.hexDump(wait_for_read.readBytes(wait_for_read.readableBytes()));
-        switch (getinfo.substring(8,10)){
+        logger.info(getinfo);
+        switch (getinfo.substring(8, 10)) {
             case "06":
-                results=Command.RECEIVE_COMPLE.analye(getinfo);
+                results = Command.RECEIVE_COMPLE.analye(getinfo);
                 //移除订单
-                if(results!=null){
-                    PackMachine packMachine=sessionManager.getPackMachineMapByIp().get(clientIp);
-                    for(CarLane carLane:packMachine.getPackerConfigure().getCarLanes()){
-                        if(carLane.getHardCode().equals(results.get("laneHardCode"))){
-                            if(carLane.getWaitExecuteOfOrders().size()!=0){
+                if (results != null) {
+                    PackMachine packMachine = sessionManager.getPackMachineMapByIp().get(clientIp);
+                    for (CarLane carLane : packMachine.getPackerConfigure().getCarLanes()) {
+                        if (Integer.parseInt(carLane.getHardCode(), 16) == (Integer.parseInt(results.get("laneHardCode"), 16))) {
+                            if (carLane.getWaitExecuteOfOrders().size() != 0) {
                                 /**
                                  * 1、设置当前包数
                                  * 2、重置包装机当前订单
@@ -102,13 +105,13 @@ public class MsgDecoder_Inbound extends ChannelInboundHandlerAdapter {
             case "07":
                 Command.RECEIVE_KEYSURE.analye(getinfo);
                 break;
-            case "04":
-                results=Command.RECEIVE_WEIGHT.analye(getinfo);
-                if(results!=null){
-                    PackMachine packMachine=sessionManager.getPackMachineMapByIp().get(clientIp);
-                    for(CarLane carLane:packMachine.getPackerConfigure().getCarLanes()){
-                        if(carLane.getHardCode().equals(results.get("laneHardCode"))){
-                            if(carLane.getWaitExecuteOfOrders().size()!=0){
+            case "04"://881840100405a50c3337000000000000015a
+                results = Command.RECEIVE_WEIGHT.analye(getinfo);
+                if (results != null) {
+                    PackMachine packMachine = sessionManager.getPackMachineMapByIp().get(clientIp);
+                    for (CarLane carLane : packMachine.getPackerConfigure().getCarLanes()) {
+                        if (Integer.parseInt(carLane.getHardCode(), 16) == (Integer.parseInt(results.get("laneHardCode"), 16))) {
+                            if (carLane.getWaitExecuteOfOrders().size() != 0) {
                                 carLane.getWaitExecuteOfOrders().get(0).setAlready_amount(Integer.valueOf(results.get("alreadLoad").trim()));
                                 packMachine.setCurrentExecuteOrder(carLane.getWaitExecuteOfOrders().get(0));
                             }
@@ -118,7 +121,7 @@ public class MsgDecoder_Inbound extends ChannelInboundHandlerAdapter {
                 }
                 break;
             case "08":
-                results=Command.RECEIVE_ACKNOWLEDGE.analye(getinfo);
+                results = Command.RECEIVE_ACKNOWLEDGE.analye(getinfo);
                 break;
             case "15":
                 Command.RECEIVE_HEARTBEAT.analye(getinfo);
@@ -130,7 +133,7 @@ public class MsgDecoder_Inbound extends ChannelInboundHandlerAdapter {
                 Command.RECEIVE_RADIATIONWEIGHT.analye(getinfo);
                 break;
             default:
-                logger.error("command ="+getinfo.substring(8,10));
+                logger.error("command =" + getinfo.substring(8, 10));
                 break;
 
         }
@@ -172,6 +175,7 @@ public class MsgDecoder_Inbound extends ChannelInboundHandlerAdapter {
     public SessionManager getSessionManager() {
         return sessionManager;
     }
+
     @Autowired
     public void setMainFrame(MainFrame mainFrame) {
         this.mainFrame = mainFrame;

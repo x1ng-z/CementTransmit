@@ -328,7 +328,7 @@ public class CenterPanel extends JPanel {
                     Location location=new Location();
                     location.setPackmachineIndex(pack_machine.getPackerConfigure().getDeviceOrder());
                     location.setProductionLine(pack_machine.getPackerConfigure().getProductLine());
-                    location.setCarLaneIndex(Integer.parseInt(assignOrderTable.getValueAt(selected_row, 1).toString()));
+                    location.setCarLaneIndex(Integer.parseInt(assignOrderTable.getValueAt(selected_row, 9).toString()));
                     orderOperateService.unassignOrderInPackList(location,selected_row);
                     mainFrame.flushAssignOrderTable();
 
@@ -379,7 +379,7 @@ public class CenterPanel extends JPanel {
                     Location location=new Location();
                     location.setProductionLine(pack_machine.getPackerConfigure().getProductLine());
                     location.setPackmachineIndex(pack_machine.getPackerConfigure().getDeviceOrder());
-                    location.setCarLaneIndex(Integer.valueOf(assignOrderTable.getValueAt(selected_row, 1).toString()));
+                    location.setCarLaneIndex(Integer.valueOf(assignOrderTable.getValueAt(selected_row, 9).toString()));
                     OrderModifyFrameInAssign carMessage_C = new OrderModifyFrameInAssign(sizecoeW, sizecoeH, row_Array, assignOrderTable, selected_row, getClassSelect(), location,orderOperateService,mainFrame);
                     carMessage_C.setLocationRelativeTo(e.getComponent());
                     carMessage_C.setVisible(true);
@@ -401,7 +401,7 @@ public class CenterPanel extends JPanel {
                     Location location=new Location();
                     location.setProductionLine(pack_machine.getPackerConfigure().getProductLine());
                     location.setPackmachineIndex(pack_machine.getPackerConfigure().getDeviceOrder());
-                    location.setCarLaneIndex(Integer.valueOf(assignOrderTable.getValueAt(selected_row, 1).toString()));
+                    location.setCarLaneIndex(Integer.valueOf(assignOrderTable.getValueAt(selected_row, 9).toString()));
                     orderOperateService.delectOrderInPackList(location,selected_row);
                     mainFrame.flushAssignOrderTable();
 
@@ -435,7 +435,7 @@ public class CenterPanel extends JPanel {
         java.util.List<Order> ssigned_queue = pack_machine.getAllSortOrder();
         for (int i = 0; i < ssigned_queue.size(); ++i) {
             Order order = ssigned_queue.get(i);
-            assignOrderTable.defaultModel.insertRow(i, new Object[]{order.getVehicleno(), order.getCarLaneIndex() == 0 ? "null" : order.getCarLaneIndex()+"", order.getMaterial(),  Integer.valueOf(order.getTotal_amount()).toString(), Integer.valueOf(order.getAlready_amount()).toString(), order.getConsumer_code(), order.getBatch_no(), order.getBatch_no(),order.getPk_delivery()});
+            assignOrderTable.defaultModel.insertRow(i, new Object[]{order.getVehicleno(), order.getCarLaneIndex() == 0 ? "null" : order.getCarlanecomment()+"", order.getMaterial(),  Integer.valueOf(order.getTotal_amount()).toString(), Integer.valueOf(order.getAlready_amount()).toString(), order.getConsumer_code(), order.getBatch_no(), order.getBatch_no(),order.getPk_delivery(),order.getCarLaneIndex()+""});
         }
 
     }
@@ -501,7 +501,7 @@ public class CenterPanel extends JPanel {
             textFieldsArray[1].setText("COM_F");
             textFieldsArray[2].setText(order.getVehicleno());
             textFieldsArray[3].setText(Integer.valueOf(order.getTotal_amount()).toString());
-            textFieldsArray[4].setText(order.getCarLaneIndex()+"");
+            textFieldsArray[4].setText(order.getCarlanecomment()+"");
             textFieldsArray[5].setText(order.getMaterial());
             textFieldsArray[6].setText(order.getBillcode());
             //code

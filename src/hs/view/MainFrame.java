@@ -19,11 +19,14 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static java.lang.Math.round;
 
@@ -57,7 +60,14 @@ public class MainFrame extends JFrame {
 
     void build(){
         centerPanel.removeAll();
+        int temp_plno;
+        for(temp_plno=1;temp_plno<12;temp_plno++){
 
+            if(orderOperateService.getPackMAchineGroup().getProductLineMaps().containsKey(temp_plno)){
+                break;
+            }
+        }
+        gproductline=temp_plno;
         int countOfPackMachine=orderOperateService.getPackMAchineGroup().getProductLineMaps().get(gproductline).getDeviceMaps().size();
         GridLayout gridLayout1 = new GridLayout(1, 3, (int) round(10 * sizecoeW), (int) round(0 * sizecoeH));
 //        FlowLayout gridLayout1=new FlowLayout();
@@ -94,6 +104,18 @@ public class MainFrame extends JFrame {
 
     public MainFrame(OrderOperateService orderOperateService) {
         this.orderOperateService=orderOperateService;
+
+
+        int temp_plno;
+        for(temp_plno=1;temp_plno<12;temp_plno++){
+
+            if(orderOperateService.getPackMAchineGroup().getProductLineMaps().containsKey(temp_plno)){
+                break;
+            }
+        }
+        gproductline=temp_plno;
+
+
         Toolkit kit = Toolkit.getDefaultToolkit();
         Dimension screenSize = kit.getScreenSize();
 //        Image logoimage = Toolkit.getDefaultToolkit().createImage(System.getProperty("user.dir")+"/resource/img/Icon.jpg");
@@ -196,10 +218,12 @@ public class MainFrame extends JFrame {
         modelPanel.add(radioBtn1);
         modelPanel.add(radioBtn2);
 
-        int plnumber=orderOperateService.getPackMAchineGroup().getProductLineMaps().size();
-        String[] proline_list = new String[plnumber];
-        for(int i=0;i<plnumber;++i){
-            proline_list[i]=(i+1)+"线";
+
+
+        String[] proline_list = new String[orderOperateService.getPackMAchineGroup().getProductLineMaps().size()];
+        int indexplno=0;
+        for(Integer plno:orderOperateService.getPackMAchineGroup().getProductLineMaps().keySet()){
+            proline_list[indexplno++]=plno+"线";
         }
         JComboBox<String> proline_box = new JComboBox<String>(proline_list);
         proline_box.setFont(font14);
@@ -212,7 +236,16 @@ public class MainFrame extends JFrame {
                 // 只处理选中的状态
                 if (e.getStateChange() == ItemEvent.SELECTED) {
                     logger.info("选中: " + proline_box.getSelectedIndex() + " = " + proline_box.getSelectedItem());
-                    gproductline=proline_box.getSelectedIndex()+1;
+
+                    Pattern pattern=Pattern.compile("(\\d*).*");
+                    Matcher matcher =pattern.matcher(proline_box.getSelectedItem().toString());
+                    if(matcher.find()){
+                        gproductline=Integer.parseInt(matcher.group(1));
+                    }else {
+                        gproductline=proline_box.getSelectedIndex()+1;
+                    }
+
+
                     build();
                     flushAssignOrderTable();
                     flushUnasignOrder();
@@ -621,7 +654,7 @@ public class MainFrame extends JFrame {
         }, 1000, 2000);// 设定指定的时间time,此处为2000毫秒
     }
 
-    /*---------------创建分配包装线车道的对话框-----------*/
+    /**---------------创建分配包装线车道的对话框-----------*/
     private void createDialog(String[] message_Arr, int selected_row) {
         GridLayout gridLayout = new GridLayout(1, 3, (int) round(5 * sizecoeW), (int) round(0 * sizecoeH));
         Border raisedBevelBorder1 = BorderFactory.createRaisedBevelBorder();
@@ -653,7 +686,7 @@ public class MainFrame extends JFrame {
             int i=0;
             for(CarLane carLane:packMachine.getPackerConfigure().getCarLanes()){
                 Carline_Btn carlineP_L1_btn1 = new Carline_Btn( message_Arr,packMachine.getPackerConfigure().getProductLine(),carLane.getLaneIndex(), packMachine.getPackerConfigure().getDeviceOrder(), selected_row, dialog);
-                lineP_L1_btn1 = new JButton("车道口" + carLane.getLaneIndex());
+                lineP_L1_btn1 = new JButton("" + carLane.getCommentZh());
                 lineP_L1_btn1.setBounds((int) round(10 * sizecoeW)+100*(i++), (int) round(50 * sizecoeH), (int) round(85 * sizecoeW), (int) round(35 * sizecoeH));
                 lineP_L1_btn1.addActionListener(carlineP_L1_btn1);
                 lineP_1.add(lineP_L1_btn1);
@@ -739,9 +772,10 @@ public class MainFrame extends JFrame {
 
 
 
+    /**
+     * 刷新未分配列表
+     * */
     public void flushUnasignOrder() {
-
-
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 int rows = unassignOrderTable.getRowCount();
@@ -761,6 +795,9 @@ public class MainFrame extends JFrame {
     }
 
 
+    /**
+     * 刷新已分配列表
+     * */
     public  void flushAssignOrderTable(){
 
         SwingUtilities.invokeLater(new Runnable() {
@@ -778,13 +815,14 @@ public class MainFrame extends JFrame {
 
     }
 
+    /**
+     * 包装机执行状态
+     * */
     public void flushPacksExecuteCondition() {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 for(CenterPanel centerPanel:centerPanels){
                     centerPanel.flushPackMahineExecuteOrder();
-
-
                 }
             }
         });

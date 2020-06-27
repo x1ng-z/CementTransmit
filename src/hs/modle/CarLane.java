@@ -27,6 +27,7 @@ public class CarLane {
     void addLast(Order order){
         order.setCarLaneHardCode(hardCode);
         order.setCarLaneIndex(laneIndex);
+        order.setCarlanecomment(commentZh);
         waitExecuteOfOrders.add(order);
     }
 

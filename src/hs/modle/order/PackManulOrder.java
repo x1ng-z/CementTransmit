@@ -30,6 +30,7 @@ public class PackManulOrder implements Order {
     private int productLineIndex;
     private int packMachineIndex;
     private int carLaneIndex;
+    private String carlanecomment;
 
     private String carLaneHardCode;
 
@@ -264,5 +265,13 @@ public class PackManulOrder implements Order {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getCarlanecomment() {
+        return carlanecomment;
+    }
+
+    public void setCarlanecomment(String carlanecomment) {
+        this.carlanecomment = carlanecomment;
     }
 }
