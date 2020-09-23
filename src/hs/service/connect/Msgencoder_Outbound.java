@@ -12,8 +12,9 @@ public class Msgencoder_Outbound extends ChannelOutboundHandlerAdapter {
     private Logger logger = Logger.getLogger(Msgencoder_Outbound.class);
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-        ByteBuf buf =ctx.alloc().buffer().writeBytes((byte[])msg);
-        logger.info("aaaa: "+msg);
+        ByteBuf buf =ctx.alloc().buffer(((byte[])msg).length);
+        buf.writeBytes((byte[])msg);
+        //logger.info("outcontext: "+msg);
         byte[] msgs =(byte[])msg;
         for(byte m:msgs){
             System.out.print(Integer.toHexString(m&0xff).length()==2?Integer.toHexString(m&0xff):"0"+Integer.toHexString(m&0xff));
@@ -22,12 +23,12 @@ public class Msgencoder_Outbound extends ChannelOutboundHandlerAdapter {
             @Override
             public void operationComplete(ChannelFuture future) throws Exception {
                 if (future.isSuccess()) {
-                    logger.debug("回写成功");
+                    logger.debug("send success");
                 } else {
-                    logger.debug("回写失败");
+                    logger.debug("send failed");
 
                 }
-                ReferenceCountUtil.release(msg);
+//                ReferenceCountUtil.release(msg);
             }
         });
     }

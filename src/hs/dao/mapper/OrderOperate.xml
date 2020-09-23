@@ -4,52 +4,52 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="hs.dao.OrderOperate">
     <select id="getOrders" resultType="hs.modle.order.PackManulOrder">
-      select
-      id ,
-      vehicleno ,
-      material ,
-      billcode ,
-      batch_no ,
-      class_no ,
-      consumer_alias ,
-       consumer_code ,
-       pk_delivery ,
-      laneno_alias ,
-       laneno ,
-       already_amount ,
-       total_amount ,
-       pro_weight ,
-       cardno ,
-       productLineIndex ,
-       packMachineIndex ,
-       carLaneIndex ,
-       carLaneHardCode ,
-       assign_time ,
-       create_time
+        select
+        id ,
+        vehicleno ,
+        material ,
+        billcode ,
+        batch_no ,
+        class_no ,
+        consumer_alias ,
+        consumer_code ,
+        pk_delivery ,
+        laneno_alias ,
+        laneno ,
+        already_amount ,
+        total_amount ,
+        pro_weight ,
+        cardno ,
+        productLineIndex ,
+        packMachineIndex ,
+        carLaneIndex ,
+        carLaneHardCode ,
+        assign_time ,
+        create_time
         from cementorder
         <where>
-              <if test="start_time !=null">
-                  create_time &gt;=#{start_time,typeHandler=hs.dao.typeHandler.InstantHandler}
-              </if>
-              <if test="end_time !=null" >
-                  and create_time &lt;=#{end_time,typeHandler=hs.dao.typeHandler.InstantHandler}
-              </if>
+            <if test="start_time !=null">
+                create_time &gt;=#{start_time,typeHandler=hs.dao.typeHandler.InstantHandler}
+            </if>
+            <if test="end_time !=null">
+                and create_time &lt;=#{end_time,typeHandler=hs.dao.typeHandler.InstantHandler}
+            </if>
 
-              <if test="ProductLineno !=null">
-                  and productLineIndex=#{ProductLineno}
+            <if test="ProductLineno !=null">
+                and productLineIndex=#{ProductLineno}
 
-              </if>
-              <if test="packIndex !=null">
-                  and packMachineIndex=#{packIndex}
-              </if>
+            </if>
+            <if test="packIndex !=null">
+                and packMachineIndex=#{packIndex}
+            </if>
 
-              <if test="meterialName !=null">
-                  and material=#{meterialName}
-              </if>
+            <if test="meterialName !=null">
+                and material=#{meterialName}
+            </if>
 
-              <if test="limit_weight !=null">
-                  and pro_weight&lt;=#{limit_weight}
-              </if>
+            <if test="limit_weight !=null">
+                and pro_weight&lt;=#{limit_weight}
+            </if>
         </where>
     </select>
 
@@ -73,7 +73,7 @@
         where id=#{id}
     </update>
 
-    <insert id="insertOrder"  parameterType="hs.modle.order.PackManulOrder" keyProperty="id" useGeneratedKeys="true">
+    <insert id="insertOrder" parameterType="hs.modle.order.PackManulOrder" keyProperty="id" useGeneratedKeys="true">
       insert into
       cementorder(
       vehicleno ,

@@ -96,6 +96,38 @@ public class MainFrame extends JFrame {
 
     }
 
+    void build(int plno){
+        centerPanel.removeAll();
+        gproductline=plno;
+        int countOfPackMachine=orderOperateService.getPackMAchineGroup().getProductLineMaps().get(gproductline).getDeviceMaps().size();
+        GridLayout gridLayout1 = new GridLayout(1, 3, (int) round(10 * sizecoeW), (int) round(0 * sizecoeH));
+//        FlowLayout gridLayout1=new FlowLayout();
+        centerPanel.setLayout(gridLayout1);
+        centerPanels=new java.util.ArrayList<CenterPanel>();
+        Toolkit kit = Toolkit.getDefaultToolkit();
+        Dimension screenSize = kit.getScreenSize();
+
+        centerPanel.setPreferredSize(new Dimension(orderOperateService.getPackMAchineGroup().getProductLineMaps().get(gproductline).getDeviceMaps().size()*screenSize.width/3 - (int) round(15 * sizecoeW), (int) round(490 * sizecoeH)));
+
+
+        Border etchedborder = BorderFactory.createEtchedBorder(EtchedBorder.RAISED);
+        Border etchedBorderL = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
+        Map<Integer,PackMachine> deviceMaps=orderOperateService.getPackMAchineGroup().getProductLineMaps().get(getGproductline()).getDeviceMaps();
+        for(PackMachine packMachine:deviceMaps.values()){
+            AssignOrderTable assignOrderTable=new AssignOrderTable();
+            CenterPanel panel=new CenterPanel(packMachine,sizecoeH, sizecoeW, gproductline,assignOrderTable, this,orderOperateService);
+            panel.setBorder(etchedborder);
+            panel.setLayout(null);
+            panel.setPreferredSize(new Dimension(screenSize.width/3,(int) round(490 * sizecoeH)));
+
+            centerPanels.add(panel);
+            centerPanel.add(panel);
+        }
+
+
+    }
+
+
 //    private Map<String, Pack_Machine> pack_machines = Machine_Manger.getInstance().getPack_machines();
 
 
@@ -105,7 +137,7 @@ public class MainFrame extends JFrame {
     public MainFrame(OrderOperateService orderOperateService) {
         this.orderOperateService=orderOperateService;
 
-
+        //选择最小的产线进行初始化界面
         int temp_plno;
         for(temp_plno=1;temp_plno<12;temp_plno++){
 
@@ -246,7 +278,7 @@ public class MainFrame extends JFrame {
                     }
 
 
-                    build();
+                    build(gproductline);
                     flushAssignOrderTable();
                     flushUnasignOrder();
                 }

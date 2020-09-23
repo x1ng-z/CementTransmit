@@ -42,6 +42,7 @@ public class MsgDecoder_Inbound extends ChannelInboundHandlerAdapter {
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
         InetSocketAddress ipSocket = (InetSocketAddress) ctx.channel().remoteAddress();
+
         String clientIp = ipSocket.getAddress().getHostAddress();
         Integer port = ipSocket.getPort();
         logger.info("come in " + clientIp + ":" + port);
@@ -69,75 +70,79 @@ public class MsgDecoder_Inbound extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        InetSocketAddress ipSocket = (InetSocketAddress) ctx.channel().remoteAddress();
-        String clientIp = ipSocket.getAddress().getHostAddress();
-        ByteBuf wait_for_read = (ByteBuf) msg;
-        String getinfo = null;
-        Map<String, String> results = null;
-        getinfo = ByteBufUtil.hexDump(wait_for_read.readBytes(wait_for_read.readableBytes()));
-        logger.info(getinfo);
-        switch (getinfo.substring(8, 10)) {
-            case "06":
-                results = Command.RECEIVE_COMPLE.analye(getinfo);
-                //移除订单
-                if (results != null) {
-                    PackMachine packMachine = sessionManager.getPackMachineMapByIp().get(clientIp);
-                    for (CarLane carLane : packMachine.getPackerConfigure().getCarLanes()) {
-                        if (Integer.parseInt(carLane.getHardCode(), 16) == (Integer.parseInt(results.get("laneHardCode"), 16))) {
-                            if (carLane.getWaitExecuteOfOrders().size() != 0) {
-                                /**
-                                 * 1、设置当前包数
-                                 * 2、重置包装机当前订单
-                                 * 3、删除车道订单
-                                 * 4、刷新分配列表
-                                 * */
-                                carLane.getWaitExecuteOfOrders().get(0).setAlready_amount(Integer.valueOf(results.get("alreadLoad").trim()));
-                                packMachine.setCurrentExecuteOrder(null);
-                                carLane.deleteOrderByIndex(0);
-                                mainFrame.flushAssignOrderTable();
+        try {
+            InetSocketAddress ipSocket = (InetSocketAddress) ctx.channel().remoteAddress();
+            String clientIp = ipSocket.getAddress().getHostAddress();
+            ByteBuf wait_for_read = (ByteBuf) msg;
+            String getinfo = null;
+            Map<String, String> results = null;
+            getinfo = ByteBufUtil.hexDump(wait_for_read.readBytes(wait_for_read.readableBytes()));
+            logger.info(getinfo);
+            switch (getinfo.substring(8, 10)) {
+                case "06":
+                    results = Command.RECEIVE_COMPLE.analye(getinfo);
+                    //移除订单
+                    if (results != null) {
+                        PackMachine packMachine = sessionManager.getPackMachineMapByIp().get(clientIp);
+                        for (CarLane carLane : packMachine.getPackerConfigure().getCarLanes()) {
+                            if (Integer.parseInt(carLane.getHardCode(), 16) == (Integer.parseInt(results.get("laneHardCode"), 16))) {
+                                if (carLane.getWaitExecuteOfOrders().size() != 0) {
+                                    /**
+                                     * 1、设置当前包数
+                                     * 2、重置包装机当前订单
+                                     * 3、删除车道订单
+                                     * 4、刷新分配列表
+                                     * */
+                                    carLane.getWaitExecuteOfOrders().get(0).setAlready_amount(Integer.valueOf(results.get("alreadLoad").trim()));
+                                    packMachine.setCurrentExecuteOrder(null);
+                                    carLane.deleteOrderByIndex(0);
+                                    mainFrame.flushAssignOrderTable();
 
+                                }
                             }
                         }
-                    }
 
-                }
-                break;
-            case "07":
-                Command.RECEIVE_KEYSURE.analye(getinfo);
-                break;
-            case "04"://881840100405a50c3337000000000000015a
-                results = Command.RECEIVE_WEIGHT.analye(getinfo);
-                if (results != null) {
-                    PackMachine packMachine = sessionManager.getPackMachineMapByIp().get(clientIp);
-                    for (CarLane carLane : packMachine.getPackerConfigure().getCarLanes()) {
-                        if (Integer.parseInt(carLane.getHardCode(), 16) == (Integer.parseInt(results.get("laneHardCode"), 16))) {
-                            if (carLane.getWaitExecuteOfOrders().size() != 0) {
-                                carLane.getWaitExecuteOfOrders().get(0).setAlready_amount(Integer.valueOf(results.get("alreadLoad").trim()));
-                                packMachine.setCurrentExecuteOrder(carLane.getWaitExecuteOfOrders().get(0));
+                    }
+                    break;
+                case "07":
+                    Command.RECEIVE_KEYSURE.analye(getinfo);
+                    break;
+                case "04"://881840100405a50c3337000000000000015a
+                    results = Command.RECEIVE_WEIGHT.analye(getinfo);
+                    if (results != null) {
+                        PackMachine packMachine = sessionManager.getPackMachineMapByIp().get(clientIp);
+                        for (CarLane carLane : packMachine.getPackerConfigure().getCarLanes()) {
+                            if (Integer.parseInt(carLane.getHardCode(), 16) == (Integer.parseInt(results.get("laneHardCode"), 16))) {
+                                if (carLane.getWaitExecuteOfOrders().size() != 0) {
+                                    carLane.getWaitExecuteOfOrders().get(0).setAlready_amount(Integer.valueOf(results.get("alreadLoad").trim()));
+                                    packMachine.setCurrentExecuteOrder(carLane.getWaitExecuteOfOrders().get(0));
+                                }
                             }
                         }
+
                     }
+                    break;
+                case "08":
+                    results = Command.RECEIVE_ACKNOWLEDGE.analye(getinfo);
+                    break;
+                case "15":
+                    Command.RECEIVE_HEARTBEAT.analye(getinfo);
+                    break;
+                case "09":
+                    Command.RECEIVE_NOORDER.analye(getinfo);
+                    break;
+                case "41":
+                    Command.RECEIVE_RADIATIONWEIGHT.analye(getinfo);
+                    break;
+                default:
+                    logger.error("command =" + getinfo.substring(8, 10));
+                    break;
 
-                }
-                break;
-            case "08":
-                results = Command.RECEIVE_ACKNOWLEDGE.analye(getinfo);
-                break;
-            case "15":
-                Command.RECEIVE_HEARTBEAT.analye(getinfo);
-                break;
-            case "09":
-                Command.RECEIVE_NOORDER.analye(getinfo);
-                break;
-            case "41":
-                Command.RECEIVE_RADIATIONWEIGHT.analye(getinfo);
-                break;
-            default:
-                logger.error("command =" + getinfo.substring(8, 10));
-                break;
-
+            }
+        } finally {
+            ReferenceCountUtil.release(msg);
         }
-        ReferenceCountUtil.release(msg);
+
     }
 
     @Override
